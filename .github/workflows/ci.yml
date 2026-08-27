@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify required project files
+        run: |
+          test -s README.md
+          test -f .github/CODEOWNERS
+          test -f .github/PULL_REQUEST_TEMPLATE.md
+          test -f SECURITY.md
+
+      - name: Lint Markdown and workflow YAML
+        uses: github/super-linter@v7
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_MARKDOWN: true
+          VALIDATE_YAML: true
