@@ -14,10 +14,13 @@ Configure this in **GitHub → Settings → Rules → Rulesets → New branch ru
 - Require conversation resolution before merging.
 - Require status checks to pass and require the branch to be up to date. Select:
   - `Validate repository`
-  - `Dependency review`
 - Block force pushes.
 - Block branch deletion.
 - Do not allow bypasses except repository administrators when an emergency override is necessary.
+
+## Optional dependency review
+
+Dependency review is intentionally not required yet because GitHub reports that this repository does not have the Dependency Graph and GitHub Advanced Security features enabled. Once both features are available in **Settings → Security → Advanced Security**, restore a dependency-review workflow and add its status check to this ruleset.
 
 ## After a technology stack is added
 
