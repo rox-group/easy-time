@@ -119,7 +119,7 @@ Publish the draft release manually when you are ready to tag a version.
 
 ### `slack-notify.yml` — Slack PR alerts
 
-Triggered whenever a pull request is **opened**, **reopened**, or **marked ready for review**.
+Triggered whenever a pull request targeting `main` is **opened**, **reopened**, or **marked ready for review**.
 
 Sends a formatted Slack Block Kit card to your team's Slack channel containing:
 - PR title & link
