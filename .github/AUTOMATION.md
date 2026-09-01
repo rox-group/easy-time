@@ -117,6 +117,18 @@ Publish the draft release manually when you are ready to tag a version.
 
 ---
 
+### `slack-notify.yml` — Slack PR alerts
+
+Triggered whenever a pull request targeting `main` is **opened**, **reopened**, or **marked ready for review**.
+
+Sends a formatted Slack Block Kit card to your team's Slack channel containing:
+- PR title & link
+- Author username & avatar
+- Target and source branches
+- One-click "Review Pull Request" action button
+
+---
+
 ## One-time repository settings
 
 The following settings must be configured manually in
@@ -127,6 +139,13 @@ The following settings must be configured manually in
 1. *Settings → General → Pull requests* → enable **Allow auto-merge**.
 2. *Settings → General → Pull requests* → enable **Automatically delete head
    branches** (keeps the branch list tidy after squash merges).
+
+### Required for Slack notifications
+
+1. Create an Incoming Webhook in Slack (*Slack App Directory → Incoming WebHooks → Add to Slack*).
+2. Choose the channel where notifications should be posted and copy the Webhook URL.
+3. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
+4. Set Name: `SLACK_WEBHOOK_URL` and Value: your Slack webhook URL.
 
 ### Required for the branch ruleset
 

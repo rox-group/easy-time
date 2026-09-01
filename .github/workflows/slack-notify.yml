@@ -1,0 +1,78 @@
+name: Slack PR Notification
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify-slack:
+    name: Send Slack notification
+    runs-on: ubuntu-latest
+    if: "!github.event.pull_request.draft"
+    steps:
+      - name: Post to Slack channel
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_AUTHOR_AVATAR: ${{ github.event.pull_request.user.avatar_url }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "::notice::SLACK_WEBHOOK_URL secret is not set. Add it in Settings -> Secrets and variables -> Actions to enable Slack notifications."
+            exit 0
+          fi
+
+          PAYLOAD=$(cat <<JSON
+          {
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🚀 New Pull Request Raised",
+                  "emoji": true
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*<${PR_URL}|#${PR_NUMBER} - ${PR_TITLE}>*\n*Repository:* \`${REPO_NAME}\`\n*Branches:* \`${HEAD_BRANCH}\` ➔ \`${BASE_BRANCH}\`\n*Author:* <https://github.com/${PR_AUTHOR}|${PR_AUTHOR}>"
+                },
+                "accessory": {
+                  "type": "image",
+                  "image_url": "${PR_AUTHOR_AVATAR}",
+                  "alt_text": "${PR_AUTHOR}"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "Review Pull Request ↗",
+                      "emoji": true
+                    },
+                    "url": "${PR_URL}",
+                    "style": "primary"
+                  }
+                ]
+              }
+            ]
+          }
+          JSON
+          )
+
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
