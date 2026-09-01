@@ -19,7 +19,7 @@ Add new stack checks here as each implementation milestone is completed (see
 
 ---
 
-### `auto-merge.yml` — Automatic squash merge
+### `auto-merge.yml` — Automatic merge
 
 Triggered when a pull request is opened, synchronised, or labelled.
 
@@ -27,8 +27,8 @@ Triggered when a pull request is opened, synchronised, or labelled.
 
 | Scenario | What happens |
 |----------|-------------|
-| PR by `dependabot[bot]` | Auto-approved and squash-merged once all checks pass |
-| PR labelled `automerge` | Squash-merged once all checks pass |
+| PR by `dependabot[bot]` | Auto-approved and merged once all checks pass |
+| PR labelled `automerge` | Merged (creating a merge commit to preserve full history) once all checks pass |
 | All other PRs | No automatic action — merge manually |
 
 **How to enable auto-merge on your PR**
