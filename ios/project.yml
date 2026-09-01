@@ -15,7 +15,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.roxie93.easytime
-        PRODUCT_NAME: Easy Time
+        PRODUCT_NAME: EasyTime
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: Easy Time
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
@@ -31,3 +31,12 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.roxie93.easytime.tests
         GENERATE_INFOPLIST_FILE: YES
+schemes:
+  EasyTime:
+    build:
+      targets:
+        EasyTime: all
+        EasyTimeTests: [test]
+    test:
+      targets:
+        - EasyTimeTests

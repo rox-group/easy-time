@@ -289,7 +289,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.roxie93.easytime;
-				PRODUCT_NAME = "Easy Time";
+				PRODUCT_NAME = EasyTime;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -389,7 +389,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.roxie93.easytime;
-				PRODUCT_NAME = "Easy Time";
+				PRODUCT_NAME = EasyTime;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
