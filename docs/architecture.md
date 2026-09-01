@@ -97,3 +97,4 @@ GET /v1/departures?stop_id={stopId}&route_id={routeId}&direction={direction}
 - Store only the minimum user preferences required for saved commutes.
 - Never send an API key to the client or commit it to the repository.
 - Show when real-time data is stale, unavailable, or replaced by the schedule.
+
