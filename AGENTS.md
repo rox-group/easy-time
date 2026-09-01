@@ -32,6 +32,13 @@ journeys, rather than providing a general journey-planning experience.
 - Read the nearest `AGENTS.md` and relevant README before changing a component.
 - Keep iOS, backend, infrastructure, and documentation changes in their
   respective top-level directories.
+- Keep atomic commits: make purposeful, per-file/per-change commits so that the
+  history remains detailed and easily traceable.
+- Merge pull requests using standard merge commits (`--merge`) to preserve
+  the full commit history. Do not squash.
+- For automated merging, add the `automerge` label to the pull request. See
+  [`.github/AUTOMATION.md`](.github/AUTOMATION.md) for full details on all
+  repository workflows.
 - Do not add secrets, API keys, provisioning profiles, or production data to
   Git. Use environment variables and secret managers.
 - Add or update tests with behavior changes. Keep the architecture document and
@@ -39,10 +46,10 @@ journeys, rather than providing a general journey-planning experience.
 - Preserve the merge safeguards configured in `.github/`; do not weaken CI to
   make a pull request pass.
 
-## First implementation sequence
+## Implementation sequence
 
-1. Create the SwiftUI app shell and a fixture-backed saved-commute screen.
-2. Define the backend API contract and departure response model.
-3. Implement GTFS static import and GTFS-Realtime polling in the backend.
-4. Connect the iOS client to the backend and add tests.
-5. Add WidgetKit and local departure reminders.
+1. [x] **Step 1:** Create the SwiftUI app shell and a fixture-backed saved-commute screen.
+2. [ ] **Step 2 (Next):** Define the backend API contract and departure response model.
+3. [ ] **Step 3:** Implement GTFS static import and GTFS-Realtime polling in the backend.
+4. [ ] **Step 4:** Connect the iOS client to the backend and add tests.
+5. [ ] **Step 5:** Add WidgetKit and local departure reminders.
