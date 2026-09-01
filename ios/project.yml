@@ -1,0 +1,42 @@
+name: EasyTime
+options:
+  minimumXcodeGenVersion: 2.46.0
+settings:
+  base:
+    DEVELOPMENT_TEAM: ""
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    SWIFT_VERSION: "6.0"
+targets:
+  EasyTime:
+    type: application
+    platform: iOS
+    sources:
+      - path: EasyTime
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.roxie93.easytime
+        PRODUCT_NAME: EasyTime
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Easy Time
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1"
+  EasyTimeTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: EasyTimeTests
+    dependencies:
+      - target: EasyTime
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.roxie93.easytime.tests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  EasyTime:
+    build:
+      targets:
+        EasyTime: all
+        EasyTimeTests: [test]
+    test:
+      targets:
+        - EasyTimeTests

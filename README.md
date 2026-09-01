@@ -47,9 +47,18 @@ docs/                   Product, architecture, and API documentation
 
 ## Project status
 
-The repository currently contains the product foundation and delivery rules.
-The next implementation milestone is an iOS prototype that lets a person create
-and view one saved commute using fixture data.
+| Step | Milestone | Status |
+|------|-----------|--------|
+| 1 | SwiftUI app shell — fixture-backed saved-commute screen | ✅ Done |
+| 2 | Backend API contract and departure response model | 🔜 Next |
+| 3 | GTFS static import and GTFS-Realtime polling in the backend | ⬜ Pending |
+| 4 | Connect iOS client to backend and add tests | ⬜ Pending |
+| 5 | WidgetKit and local departure reminders | ⬜ Pending |
+
+**Current milestone (step 2):** define the FastAPI endpoint contract
+(`GET /v1/departures`), the JSON response schema, and the backend departure
+model. See [`docs/architecture.md`](docs/architecture.md) for the proposed
+API shape.
 
 ## Contributing
 

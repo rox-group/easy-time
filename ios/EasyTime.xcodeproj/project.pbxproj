@@ -1,0 +1,431 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		116C71B59E26FC070408CB77 /* Commute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E11B805B81DEED202312E2E /* Commute.swift */; };
+		58C12A9A25608136F980A3BF /* CommuteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */; };
+		9F4520EE6B2914B02E4F67BD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE53685208483B8387A8DC6 /* ContentView.swift */; };
+		B5382861C8BC5E835C235FC5 /* EasyTimeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */; };
+		E6A30E9DBE1D8F832F824990 /* CommuteFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BAF81EE030A78A5E6D5D8490 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B3B1028932A5C09EDAF61398 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED1113288DDD9E62C97A5E46;
+			remoteInfo = EasyTime;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		16718FBA8FEB0F9BCD99E525 /* EasyTimeTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = EasyTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E11B805B81DEED202312E2E /* Commute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commute.swift; sourceTree = "<group>"; };
+		655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteTests.swift; sourceTree = "<group>"; };
+		7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyTimeApp.swift; sourceTree = "<group>"; };
+		9E81CE223D44D336A9991FB2 /* EasyTime.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = EasyTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteFixtures.swift; sourceTree = "<group>"; };
+		ADE53685208483B8387A8DC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		11D1091F223F06B6C11E89BD = {
+			isa = PBXGroup;
+			children = (
+				82F0D81B8681D12E053AF29E /* EasyTime */,
+				D89A8545200102CF3035E8F5 /* EasyTimeTests */,
+				9F4D68455416B035A3AC7738 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		468FF2711940662E4CD5C0F9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5E11B805B81DEED202312E2E /* Commute.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		82F0D81B8681D12E053AF29E /* EasyTime */ = {
+			isa = PBXGroup;
+			children = (
+				7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */,
+				9BB5386CE07F5EAB7BD1E58A /* Fixtures */,
+				468FF2711940662E4CD5C0F9 /* Models */,
+				A3C20F485088BA7CCD195288 /* Views */,
+			);
+			path = EasyTime;
+			sourceTree = "<group>";
+		};
+		9BB5386CE07F5EAB7BD1E58A /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		9F4D68455416B035A3AC7738 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CE223D44D336A9991FB2 /* EasyTime.app */,
+				16718FBA8FEB0F9BCD99E525 /* EasyTimeTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A3C20F485088BA7CCD195288 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ADE53685208483B8387A8DC6 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D89A8545200102CF3035E8F5 /* EasyTimeTests */ = {
+			isa = PBXGroup;
+			children = (
+				655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */,
+			);
+			path = EasyTimeTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E6484B5B5352E7BA9F3202D7 /* EasyTimeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBD76664BA837A50E909C5CA /* Build configuration list for PBXNativeTarget "EasyTimeTests" */;
+			buildPhases = (
+				DB41FC4615D5312961CB92BD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				59B491524CC679BE2CAEA37E /* PBXTargetDependency */,
+			);
+			name = EasyTimeTests;
+			packageProductDependencies = (
+			);
+			productName = EasyTimeTests;
+			productReference = 16718FBA8FEB0F9BCD99E525 /* EasyTimeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ED1113288DDD9E62C97A5E46 /* EasyTime */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4BC7F0048C1C687C3E92CB11 /* Build configuration list for PBXNativeTarget "EasyTime" */;
+			buildPhases = (
+				D17746E81BC23ED1997EADF9 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EasyTime;
+			packageProductDependencies = (
+			);
+			productName = EasyTime;
+			productReference = 9E81CE223D44D336A9991FB2 /* EasyTime.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B3B1028932A5C09EDAF61398 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					E6484B5B5352E7BA9F3202D7 = {
+						DevelopmentTeam = "";
+					};
+					ED1113288DDD9E62C97A5E46 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = BD19D88AA81E0D59CE50C562 /* Build configuration list for PBXProject "EasyTime" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 11D1091F223F06B6C11E89BD;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9F4D68455416B035A3AC7738 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ED1113288DDD9E62C97A5E46 /* EasyTime */,
+				E6484B5B5352E7BA9F3202D7 /* EasyTimeTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D17746E81BC23ED1997EADF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				116C71B59E26FC070408CB77 /* Commute.swift in Sources */,
+				E6A30E9DBE1D8F832F824990 /* CommuteFixtures.swift in Sources */,
+				9F4520EE6B2914B02E4F67BD /* ContentView.swift in Sources */,
+				B5382861C8BC5E835C235FC5 /* EasyTimeApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB41FC4615D5312961CB92BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C12A9A25608136F980A3BF /* CommuteTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		59B491524CC679BE2CAEA37E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED1113288DDD9E62C97A5E46 /* EasyTime */;
+			targetProxy = BAF81EE030A78A5E6D5D8490 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		226602F7B01D9850C2AFEEA1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		46C58DB33D0E2598D6C4B86E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.roxie93.easytime.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyTime.app/EasyTime";
+			};
+			name = Debug;
+		};
+		5CB2B8D81761EFB04E36FAD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Easy Time";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.roxie93.easytime;
+				PRODUCT_NAME = EasyTime;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		6424685580D411E960452A38 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		809B7E6A9B11CA998189D820 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.roxie93.easytime.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyTime.app/EasyTime";
+			};
+			name = Release;
+		};
+		BC79908FC2C2F8DD52C0BD27 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Easy Time";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.roxie93.easytime;
+				PRODUCT_NAME = EasyTime;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4BC7F0048C1C687C3E92CB11 /* Build configuration list for PBXNativeTarget "EasyTime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC79908FC2C2F8DD52C0BD27 /* Debug */,
+				5CB2B8D81761EFB04E36FAD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BD19D88AA81E0D59CE50C562 /* Build configuration list for PBXProject "EasyTime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6424685580D411E960452A38 /* Debug */,
+				226602F7B01D9850C2AFEEA1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EBD76664BA837A50E909C5CA /* Build configuration list for PBXNativeTarget "EasyTimeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				46C58DB33D0E2598D6C4B86E /* Debug */,
+				809B7E6A9B11CA998189D820 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B3B1028932A5C09EDAF61398 /* Project object */;
+}
