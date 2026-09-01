@@ -2,6 +2,7 @@ name: Slack PR Notification
 
 on:
   pull_request:
+    branches: [main]
     types: [opened, reopened, ready_for_review]
 
 permissions:
