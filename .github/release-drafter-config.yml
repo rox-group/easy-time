@@ -1,0 +1,27 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels: ['feat', 'feature']
+  - title: '🐛 Bug Fixes'
+    labels: ['fix', 'bug']
+  - title: '📖 Documentation'
+    labels: ['docs', 'documentation']
+  - title: '🧹 Maintenance'
+    labels: ['chore', 'refactor', 'ci']
+  - title: '🔐 Security'
+    labels: ['security']
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&'
+version-resolver:
+  major:
+    labels: ['breaking-change']
+  minor:
+    labels: ['feat', 'feature']
+  patch:
+    labels: ['fix', 'bug', 'docs', 'chore', 'ci']
+  default: patch
+template: |
+  ## Changes
+
+  $CHANGES
