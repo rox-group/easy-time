@@ -1,0 +1,511 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Easy Time API",
+    "description": "Easy Time API provides departure times and real-time status for Stockholm saved commutes using Trafiklab GTFS Regional static and GTFS-Realtime feeds.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Liveness check",
+        "description": "Root liveness check for Cloud Run and load balancers.",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "description": "Returns service health status, application version, and environment.",
+        "operationId": "get_health_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/departures": {
+      "get": {
+        "tags": [
+          "Departures"
+        ],
+        "summary": "Get saved-commute departures",
+        "description": "Retrieves upcoming scheduled and real-time departures for a specific boarding stop. Allows filtering by route/line, platform, destination, and journey direction.",
+        "operationId": "get_departures_v1_departures_get",
+        "parameters": [
+          {
+            "name": "stop_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Boarding stop/station identifier (required).",
+              "examples": [
+                "9021014001234000"
+              ],
+              "title": "Stop Id"
+            },
+            "description": "Boarding stop/station identifier (required)."
+          },
+          {
+            "name": "route_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by route/line identifier (e.g. '17', '43').",
+              "examples": [
+                "17"
+              ],
+              "title": "Route Id"
+            },
+            "description": "Filter by route/line identifier (e.g. '17', '43')."
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by journey direction ('0', '1', 'outbound', 'return').",
+              "examples": [
+                "0"
+              ],
+              "title": "Direction"
+            },
+            "description": "Filter by journey direction ('0', '1', 'outbound', 'return')."
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by platform/track designation (e.g. '2').",
+              "examples": [
+                "2"
+              ],
+              "title": "Platform"
+            },
+            "description": "Filter by platform/track designation (e.g. '2')."
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by destination headsign name (case-insensitive substring).",
+              "examples": [
+                "\u00c5keshov"
+              ],
+              "title": "Destination"
+            },
+            "description": "Filter by destination headsign name (case-insensitive substring)."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Maximum number of departures to return.",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Maximum number of departures to return."
+          },
+          {
+            "name": "time_window_minutes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 360,
+              "minimum": 5,
+              "description": "Future time window in minutes to search for departures.",
+              "default": 60,
+              "title": "Time Window Minutes"
+            },
+            "description": "Future time window in minutes to search for departures."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of departures.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeparturesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error in query parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DepartureItem": {
+        "properties": {
+          "route": {
+            "type": "string",
+            "title": "Route",
+            "description": "Line / Route identifier (e.g. '17', '43').",
+            "examples": [
+              "17",
+              "43"
+            ]
+          },
+          "destination": {
+            "type": "string",
+            "title": "Destination",
+            "description": "Headsign / destination name (e.g. '\u00c5keshov', 'H\u00f6kar\u00e4ngen').",
+            "examples": [
+              "\u00c5keshov",
+              "H\u00f6kar\u00e4ngen"
+            ]
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At",
+            "description": "Scheduled departure time in UTC (ISO 8601).",
+            "examples": [
+              "2026-08-28T08:18:00Z"
+            ]
+          },
+          "predicted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predicted At",
+            "description": "Real-time predicted departure time in UTC (ISO 8601), if available.",
+            "examples": [
+              "2026-08-28T08:21:00Z"
+            ]
+          },
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform",
+            "description": "Track / platform designation (e.g. '2').",
+            "examples": [
+              "2",
+              "3"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/DepartureStatus",
+            "description": "Current operational status of the departure.",
+            "default": "scheduled",
+            "examples": [
+              "delayed",
+              "on_time"
+            ]
+          },
+          "trip_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trip Id",
+            "description": "GTFS trip identifier.",
+            "examples": [
+              "14010000637189123"
+            ]
+          },
+          "stop_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Id",
+            "description": "GTFS stop identifier.",
+            "examples": [
+              "9022001001234001"
+            ]
+          },
+          "stop_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Name",
+            "description": "Human-readable boarding stop name.",
+            "examples": [
+              "Skanstull"
+            ]
+          },
+          "delay_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delay Minutes",
+            "description": "Calculated delay in minutes (positive for delays, negative for early).",
+            "examples": [
+              3,
+              0
+            ]
+          },
+          "is_realtime": {
+            "type": "boolean",
+            "title": "Is Realtime",
+            "description": "True if departure has been updated with live real-time predictions.",
+            "default": false,
+            "examples": [
+              true,
+              false
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "route",
+          "destination",
+          "scheduled_at"
+        ],
+        "title": "DepartureItem",
+        "description": "A single scheduled or real-time departure."
+      },
+      "DepartureStatus": {
+        "type": "string",
+        "enum": [
+          "on_time",
+          "delayed",
+          "early",
+          "cancelled",
+          "scheduled"
+        ],
+        "title": "DepartureStatus",
+        "description": "Status of a departure."
+      },
+      "DeparturesResponse": {
+        "properties": {
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generated At",
+            "description": "UTC timestamp when this response was generated.",
+            "examples": [
+              "2026-08-28T08:10:00Z"
+            ]
+          },
+          "freshness_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Freshness At",
+            "description": "UTC timestamp of the latest real-time data ingestion feed.",
+            "examples": [
+              "2026-08-28T08:09:45Z"
+            ]
+          },
+          "stop_id": {
+            "type": "string",
+            "title": "Stop Id",
+            "description": "The queried boarding stop identifier.",
+            "examples": [
+              "9021014001234000"
+            ]
+          },
+          "departures": {
+            "items": {
+              "$ref": "#/components/schemas/DepartureItem"
+            },
+            "type": "array",
+            "title": "Departures",
+            "description": "List of departures matching the query criteria, ordered by departure time."
+          }
+        },
+        "type": "object",
+        "required": [
+          "stop_id"
+        ],
+        "title": "DeparturesResponse",
+        "description": "Response envelope containing departures for a saved commute stop."
+      },
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Human-readable error explanation."
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code",
+            "description": "Optional machine-readable error code."
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "description": "Standard error response payload."
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Service health status.",
+            "default": "ok",
+            "examples": [
+              "ok"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "description": "Application version.",
+            "default": "0.1.0",
+            "examples": [
+              "0.1.0"
+            ]
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment",
+            "description": "Current environment.",
+            "default": "development",
+            "examples": [
+              "development"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp",
+            "description": "Current server UTC timestamp.",
+            "examples": [
+              "2026-09-02T08:00:00Z"
+            ]
+          }
+        },
+        "type": "object",
+        "title": "HealthResponse",
+        "description": "Health check response."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Departures",
+      "description": "Endpoints for retrieving scheduled and real-time commute departures."
+    },
+    {
+      "name": "Health",
+      "description": "Service health check and monitoring endpoints."
+    }
+  ]
+}
