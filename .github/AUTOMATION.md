@@ -64,8 +64,9 @@ milestone is complete:
 | 4 — iOS networking | `ios/EasyTime/Networking/` or `ios/EasyTime/Services/` directory exists |
 | 5 — WidgetKit | `ios/EasyTimeWidget/` directory exists |
 
-If the table changes the bot commits
-`docs(auto): sync README milestone status [skip ci]` directly to `main`.
+If the table changes, the workflow automatically opens an `automerge`-labelled
+pull request (`docs/auto-sync-readme`) which is merged once repository validation passes.
+
 
 ---
 
