@@ -50,16 +50,14 @@ docs/                   Product, architecture, and API documentation
 | Step | Milestone | Status |
 |------|-----------|--------|
 | 1 | SwiftUI app shell — fixture-backed saved-commute screen | ✅ Done |
-| 2 | Backend API contract and departure response model | 🔜 Next |
-| 3 | GTFS static import and GTFS-Realtime polling in the backend | ⬜ Pending |
+| 2 | Backend API contract and departure response model | ✅ Done |
+| 3 | GTFS static import and GTFS-Realtime polling in the backend | 🔜 Next |
 | 4 | Connect iOS client to backend and add tests | ⬜ Pending |
 | 5 | WidgetKit and local departure reminders | ⬜ Pending |
 
-**Current milestone (step 2):** define the FastAPI endpoint contract
-(`GET /v1/departures`), the JSON response schema, and the backend departure
-model. See [`docs/architecture.md`](docs/architecture.md) for the proposed
-API shape.
-
+**Current milestone (step 3):** implement the daily GTFS static import job and
+the GTFS-Realtime polling job. See [`docs/architecture.md`](docs/architecture.md)
+for the data ingestion design.
 ## Contributing
 
 Read [AGENTS.md](AGENTS.md) before making changes. Every pull request must pass

@@ -34,9 +34,10 @@ MILESTONES = [
     (
         "GTFS static import and GTFS-Realtime polling in the backend",
         lambda: any(
-            (ROOT / "backend/app").rglob(pattern)
+            bool(list((ROOT / "backend/app").rglob(pattern)))
             for pattern in ("*gtfs*", "*ingest*", "*import*")
         ),
+
         "implement the daily GTFS static import job and\nthe GTFS-Realtime polling job. See [`docs/architecture.md`](docs/architecture.md)\n"
         "for the data ingestion design.",
     ),
