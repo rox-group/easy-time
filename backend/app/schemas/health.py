@@ -28,4 +28,3 @@ class HealthResponse(BaseModel):
         description="Current server UTC timestamp.",
         examples=["2026-09-02T08:00:00Z"],
     )
-

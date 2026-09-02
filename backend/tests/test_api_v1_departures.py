@@ -136,4 +136,3 @@ def test_openapi_schema_endpoint(client: TestClient):
     assert data["info"]["title"] == "Easy Time API"
     assert "/v1/departures" in data["paths"]
     assert "/v1/health" in data["paths"]
-

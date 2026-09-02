@@ -164,4 +164,3 @@ def test_health_response():
     assert health.version == "0.1.0"
     assert health.environment == "test"
     assert isinstance(health.timestamp, datetime)
-
