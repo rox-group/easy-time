@@ -41,3 +41,32 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_MARKDOWN: true
           VALIDATE_YAML: true
+
+  backend-test:
+    name: Backend tests & lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements-dev.txt
+
+      - name: Lint with ruff
+        run: |
+          ruff check backend
+
+      - name: Run backend tests
+        run: |
+          pytest backend/tests -v -c backend/pyproject.toml
+

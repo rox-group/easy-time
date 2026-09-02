@@ -3,5 +3,18 @@ DerivedData/
 build/
 *.xcuserstate
 xcuserdata/
+# Python & Virtual Environments
+.venv/
+backend/.venv/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
 .env
-.env.*
+
