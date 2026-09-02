@@ -127,6 +127,14 @@ Sends a formatted Slack Block Kit card to your team's Slack channel containing:
 - Target and source branches
 - One-click "Review Pull Request" action button
 
+### `monday-sync.yml` — monday.com board sync
+
+Triggered on pull request events (`opened`, `reopened`, `ready_for_review`, `closed`), issue events (`opened`, `closed`), or manually via `workflow_dispatch`.
+
+- **PR opened / in review:** Finds or creates the matching task on the `Tasks` board, marks it **Working on it**, and posts the PR link.
+- **PR merged:** Automatically updates task status to **Done** and adds a merge update.
+- **Issue opened / closed:** Automatically creates new items for issues and marks them **Done** when resolved.
+
 ---
 
 ## One-time repository settings
@@ -147,10 +155,17 @@ The following settings must be configured manually in
 3. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
 4. Set Name: `SLACK_WEBHOOK_URL` and Value: your Slack webhook URL.
 
+### Required for monday.com sync
+
+1. Generate a Personal API Token on monday.com (*Profile Avatar → Developers → My Access Tokens*).
+2. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
+3. Set Name: `MONDAY_API_KEY` and Value: your monday.com API token.
+
 ### Required for the branch ruleset
 
 Follow the steps in `.github/MAIN_BRANCH_RULESET.md` to protect `main` and
 require the `Validate repository` check before merging.
+
 
 ---
 

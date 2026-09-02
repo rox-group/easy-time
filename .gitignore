@@ -3,7 +3,6 @@ DerivedData/
 build/
 *.xcuserstate
 xcuserdata/
-
 # Python & Virtual Environments
 .venv/
 backend/.venv/
@@ -17,4 +16,5 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+.env
 
