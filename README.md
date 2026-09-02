@@ -51,13 +51,12 @@ docs/                   Product, architecture, and API documentation
 |------|-----------|--------|
 | 1 | SwiftUI app shell — fixture-backed saved-commute screen | ✅ Done |
 | 2 | Backend API contract and departure response model | ✅ Done |
-| 3 | GTFS static import and GTFS-Realtime polling in the backend | 🔜 Next |
-| 4 | Connect iOS client to backend and add tests | ⬜ Pending |
+| 3 | GTFS static import and GTFS-Realtime polling in the backend | ✅ Done |
+| 4 | Connect iOS client to backend and add tests | 🔜 Next |
 | 5 | WidgetKit and local departure reminders | ⬜ Pending |
 
-**Current milestone (step 3):** implement the daily GTFS static import job and
-the GTFS-Realtime polling job. See [`docs/architecture.md`](docs/architecture.md)
-for the data ingestion design.
+**Current milestone (step 4):** wire the iOS client to the live backend API,
+replace fixture data with real departures, and add integration tests.
 ## Contributing
 
 Read [AGENTS.md](AGENTS.md) before making changes. Every pull request must pass

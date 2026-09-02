@@ -49,8 +49,7 @@ journeys, rather than providing a general journey-planning experience.
 ## Implementation sequence
 
 1. [x] **Step 1:** Create the SwiftUI app shell and a fixture-backed saved-commute screen.
-2. [x] **Step 2:** Define the backend API contract and departure response model.
-3. [ ] **Step 3 (Next):** Implement GTFS static import and GTFS-Realtime polling in the backend.
+2. [ ] **Step 2 (Next):** Define the backend API contract and departure response model.
+3. [ ] **Step 3:** Implement GTFS static import and GTFS-Realtime polling in the backend.
 4. [ ] **Step 4:** Connect the iOS client to the backend and add tests.
 5. [ ] **Step 5:** Add WidgetKit and local departure reminders.
-

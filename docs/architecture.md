@@ -67,37 +67,27 @@ Departure
   status, dataFreshnessAt
 ```
 
-## API contract
-
-See [`docs/api.md`](api.md) and [`docs/openapi.json`](openapi.json) for the full OpenAPI 3.1 specification.
+## API shape: initial proposal
 
 ```http
-GET /v1/departures?stop_id={stopId}&route_id={routeId}&direction={direction}&platform={platform}&destination={destination}&limit={limit}&time_window_minutes={timeWindowMinutes}
+GET /v1/departures?stop_id={stopId}&route_id={routeId}&direction={direction}
 ```
 
 ```json
 {
   "generated_at": "2026-08-28T08:10:00Z",
   "freshness_at": "2026-08-28T08:09:45Z",
-  "stop_id": "9021014001234000",
   "departures": [
     {
       "route": "43",
       "destination": "Hökarängen",
       "scheduled_at": "2026-08-28T08:18:00Z",
       "predicted_at": "2026-08-28T08:21:00Z",
-      "platform": "2",
-      "status": "delayed",
-      "trip_id": "14010000637189101",
-      "stop_id": "9021014001234000",
-      "stop_name": "Skanstull",
-      "delay_minutes": 3,
-      "is_realtime": true
+      "status": "delayed"
     }
   ]
 }
 ```
-
 
 ## Privacy and reliability
 
