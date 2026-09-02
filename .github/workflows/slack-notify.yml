@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: [main]
     types: [opened, reopened, ready_for_review]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,20 +14,21 @@ jobs:
   notify-slack:
     name: Send Slack notification
     runs-on: ubuntu-latest
-    if: "!github.event.pull_request.draft"
+    if: "github.event_name == 'workflow_dispatch' || !github.event.pull_request.draft"
     steps:
       - name: Post to Slack channel
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_AUTHOR_AVATAR: ${{ github.event.pull_request.user.avatar_url }}
-          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
-          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          PR_TITLE: ${{ github.event.pull_request.title || 'Manual Test Notification' }}
+          PR_URL: ${{ github.event.pull_request.html_url || github.event.repository.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '0' }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
+          PR_AUTHOR_AVATAR: ${{ github.event.pull_request.user.avatar_url || github.event.sender.avatar_url }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref || github.event.repository.default_branch }}
           REPO_NAME: ${{ github.repository }}
         run: |
+
           if [ -z "$SLACK_WEBHOOK_URL" ]; then
             echo "::notice::SLACK_WEBHOOK_URL secret is not set. Add it in Settings -> Secrets and variables -> Actions to enable Slack notifications."
             exit 0
