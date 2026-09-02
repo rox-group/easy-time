@@ -1,0 +1,233 @@
+name: Monday.com Sync
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, closed]
+    branches: [main]
+  issues:
+    types: [opened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  sync-monday:
+    name: Sync with monday.com
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Monday.com sync script
+        env:
+          MONDAY_API_KEY: ${{ secrets.MONDAY_API_KEY }}
+          EVENT_NAME: ${{ github.event_name }}
+          # PR context
+          PR_ACTION: ${{ github.event.action }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          # Issue context
+          ISSUE_ACTION: ${{ github.event.action }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          python3 - << 'PYEOF'
+          import os
+          import json
+          import urllib.request
+          import urllib.error
+
+          api_key = os.environ.get("MONDAY_API_KEY", "").strip()
+          if not api_key:
+              print("::warning::MONDAY_API_KEY secret is not set. Add it in Settings -> Secrets and variables -> Actions.")
+              exit(0)
+
+          API_URL = "https://api.monday.com/v2"
+          HEADERS = {
+              "Authorization": api_key,
+              "Content-Type": "application/json",
+              "API-Version": "2024-01"
+          }
+
+          def query_monday(query, variables=None):
+              payload = {"query": query}
+              if variables:
+                  payload["variables"] = variables
+              data = json.dumps(payload).encode("utf-8")
+              req = urllib.request.Request(API_URL, data=data, headers=HEADERS, method="POST")
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      res = json.loads(resp.read().decode("utf-8"))
+                      if "errors" in res:
+                          print("GraphQL Error:", json.dumps(res["errors"], indent=2))
+                      return res.get("data", {})
+              except urllib.error.HTTPError as e:
+                  print(f"HTTP Error {e.code}: {e.read().decode('utf-8')}")
+                  return {}
+              except Exception as e:
+                  print(f"Request failed: {e}")
+                  return {}
+
+          event_name = os.environ.get("EVENT_NAME", "")
+          print(f"Triggered by event: {event_name}")
+
+          # 1. Fetch boards to find the "Tasks" board
+          boards_query = """
+          query {
+            boards(limit: 50) {
+              id
+              name
+              columns {
+                id
+                title
+                type
+              }
+            }
+          }
+          """
+          boards_res = query_monday(boards_query)
+          boards = boards_res.get("boards", [])
+          print(f"Found {len(boards)} boards on monday.com:")
+          for b in boards:
+              print(f" - {b['name']} (ID: {b['id']})")
+
+          # Target "Tasks" board, fallback to first board if not explicitly named
+          target_board = next((b for b in boards if b["name"].strip().lower() == "tasks"), None)
+          if not target_board and boards:
+              target_board = boards[0]
+
+          if not target_board:
+              print("No accessible boards found on monday.com.")
+              exit(0)
+
+          board_id = int(target_board["id"])
+          print(f"Using board: {target_board['name']} (ID: {board_id})")
+
+          # Identify status column
+          status_col = next((c for c in target_board.get("columns", []) if c["type"] == "status"), None)
+          status_col_id = status_col["id"] if status_col else "status"
+
+          # Helper: Find item by name or keywords
+          def find_item(search_text):
+              items_query = """
+              query($board_id: [ID!]) {
+                boards(ids: $board_id) {
+                  items_page(limit: 100) {
+                    items {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+              """
+              res = query_monday(items_query, {"board_id": [board_id]})
+              try:
+                  items = res["boards"][0]["items_page"]["items"]
+              except (KeyError, IndexError):
+                  items = []
+
+              search_lower = search_text.lower().strip()
+              for item in items:
+                  item_name_lower = item["name"].lower().strip()
+                  if item_name_lower == search_lower or search_lower in item_name_lower or item_name_lower in search_lower:
+                      return item
+              return None
+
+          def update_item_status(item_id, status_label):
+              mutation = """
+              mutation($board_id: ID!, $item_id: ID!, $col_id: String!, $val: String!) {
+                change_simple_column_value(board_id: $board_id, item_id: $item_id, column_id: $col_id, value: $val) {
+                  id
+                }
+              }
+              """
+              query_monday(mutation, {
+                  "board_id": board_id,
+                  "item_id": item_id,
+                  "col_id": status_col_id,
+                  "val": status_label
+              })
+
+          def add_item_update(item_id, body_html):
+              mutation = """
+              mutation($item_id: ID!, $body: String!) {
+                create_update(item_id: $item_id, body: $body) {
+                  id
+                }
+              }
+              """
+              query_monday(mutation, {"item_id": item_id, "body": body_html})
+
+          # Handle Pull Requests
+          if event_name == "pull_request":
+              pr_action = os.environ.get("PR_ACTION")
+              pr_number = os.environ.get("PR_NUMBER")
+              pr_title = os.environ.get("PR_TITLE", "")
+              pr_url = os.environ.get("PR_URL")
+              pr_merged = os.environ.get("PR_MERGED") == "true"
+              is_draft = os.environ.get("PR_DRAFT") == "true"
+              head_branch = os.environ.get("HEAD_BRANCH", "")
+
+              print(f"PR #{pr_number}: '{pr_title}', action: {pr_action}, merged: {pr_merged}")
+
+              matched_item = find_item(pr_title) or find_item(head_branch)
+
+              if pr_merged:
+                  if matched_item:
+                      print(f"Marking item '{matched_item['name']}' as Done")
+                      update_item_status(matched_item["id"], "Done")
+                      add_item_update(matched_item["id"], f"🚀 <b>Merged in PR #{pr_number}</b>: <a href='{pr_url}'>{pr_title}</a>")
+              elif pr_action in ["opened", "reopened", "ready_for_review"] and not is_draft:
+                  if matched_item:
+                      print(f"Updating item '{matched_item['name']}' to Review")
+                      update_item_status(matched_item["id"], "Working on it")
+                      add_item_update(matched_item["id"], f"🔍 <b>Pull Request Opened</b>: <a href='{pr_url}'>#{pr_number} - {pr_title}</a> (branch: <code>{head_branch}</code>)")
+                  else:
+                      print(f"Creating new item for PR #{pr_number}")
+                      create_mutation = """
+                      mutation($board_id: ID!, $item_name: String!) {
+                        create_item(board_id: $board_id, item_name: $item_name) {
+                          id
+                        }
+                      }
+                      """
+                      create_res = query_monday(create_mutation, {"board_id": board_id, "item_name": pr_title})
+                      new_id = create_res.get("create_item", {}).get("id")
+                      if new_id:
+                          update_item_status(new_id, "Working on it")
+                          add_item_update(new_id, f"🔍 <b>Linked to PR #{pr_number}</b>: <a href='{pr_url}'>{pr_title}</a>")
+
+          # Handle Issues
+          elif event_name == "issues":
+              issue_action = os.environ.get("ISSUE_ACTION")
+              issue_number = os.environ.get("ISSUE_NUMBER")
+              issue_title = os.environ.get("ISSUE_TITLE", "")
+              issue_url = os.environ.get("ISSUE_URL")
+
+              if issue_action == "opened":
+                  item_name = f"#{issue_number} - {issue_title}"
+                  create_mutation = """
+                  mutation($board_id: ID!, $item_name: String!) {
+                    create_item(board_id: $board_id, item_name: $item_name) {
+                      id
+                    }
+                  }
+                  """
+                  create_res = query_monday(create_mutation, {"board_id": board_id, "item_name": item_name})
+                  new_id = create_res.get("create_item", {}).get("id")
+                  if new_id:
+                      add_item_update(new_id, f"📌 <b>GitHub Issue Opened</b>: <a href='{issue_url}'>#{issue_number} - {issue_title}</a>")
+              elif issue_action == "closed":
+                  matched = find_item(issue_title)
+                  if matched:
+                      update_item_status(matched["id"], "Done")
+
+          print("Monday.com sync step completed successfully.")
+          PYEOF
