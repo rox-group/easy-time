@@ -6,9 +6,11 @@ on:
     paths-ignore:
       - 'README.md'
       - '.github/**'
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   sync-readme:
@@ -17,8 +19,6 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,14 +28,14 @@ jobs:
       - name: Update README milestone table
         run: python3 .github/scripts/update_readme_status.py
 
-      - name: Commit README if it changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          if git diff --staged --quiet; then
-            echo "README already up to date — nothing to commit."
-          else
-            git commit -m "docs(auto): sync README milestone status [skip ci]"
-            git push
-          fi
+      - name: Create Pull Request if README changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs(auto): sync README milestone status"
+          title: "docs(auto): sync README milestone status"
+          body: "Automated pull request to synchronize README implementation milestones."
+          branch: "docs/auto-sync-readme"
+          labels: "documentation, automerge"
+          delete-branch: true
+
