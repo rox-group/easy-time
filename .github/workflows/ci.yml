@@ -81,8 +81,9 @@ jobs:
     steps:
       - name: Post approval review with CI summary
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.USER_PAT || secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+
         run: |
           BODY=$(cat <<'EOF'
           ### ✅ CI Verification Passed
