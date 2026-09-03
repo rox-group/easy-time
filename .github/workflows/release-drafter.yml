@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: release-drafter/release-drafter@v6
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Draft next release
         uses: release-drafter/release-drafter@v6
