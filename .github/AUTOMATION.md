@@ -138,6 +138,16 @@ Triggered on pull request events (`opened`, `reopened`, `ready_for_review`, `clo
 
 ---
 
+### `auto-update-branch.yml` — Auto-update open PRs with main
+
+Triggered on every `push` to `main` and manually via `workflow_dispatch`.
+
+- Finds all open, non-draft pull requests targeting `main`.
+- Calls GitHub's `updateBranch` API to automatically merge or rebase the latest `main` into the PR branch so pull requests never fall behind `main`.
+
+---
+
+
 ## One-time repository settings
 
 The following settings must be configured manually in
