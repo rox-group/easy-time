@@ -78,7 +78,6 @@ Triggered on every pull request open, synchronize, or reopen event.
 - Automatically assigns the pull request to the author who created it.
 - Applies one of the following labels based on total lines changed:
 
-
 | Label | Lines changed |
 | ----- | ------------- |
 | `xs`  | 0 – 10        |
@@ -183,7 +182,6 @@ The following settings must be configured manually in
 4. If omitted, CI comments and reviews are posted by `github-actions[bot]`.
 
 ### Required for the branch ruleset
-
 
 Follow the steps in `.github/MAIN_BRANCH_RULESET.md` to protect `main` and
 require the `Validate repository` check before merging.
