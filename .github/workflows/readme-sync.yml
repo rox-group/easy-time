@@ -29,7 +29,7 @@ jobs:
         run: python3 .github/scripts/update_readme_status.py
 
       - name: Create Pull Request if README changed
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "docs(auto): sync README milestone status"
