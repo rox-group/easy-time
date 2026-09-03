@@ -25,11 +25,11 @@ Triggered when a pull request is opened, synchronised, or labelled.
 
 **How it works**
 
-| Scenario | What happens |
-|----------|-------------|
-| PR by `dependabot[bot]` | Auto-approved and merged once all checks pass |
+| Scenario                | What happens                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| PR by `dependabot[bot]` | Auto-approved and merged once all checks pass                                  |
 | PR labelled `automerge` | Merged (creating a merge commit to preserve full history) once all checks pass |
-| All other PRs | No automatic action — merge manually |
+| All other PRs           | No automatic action — merge manually                                           |
 
 **How to enable auto-merge on your PR**
 
@@ -41,7 +41,7 @@ check turns green. If a check fails the merge is cancelled and you must fix
 the issue and re-add the label.
 
 > **Prerequisite**: Enable **Allow auto-merge** in
-> *Settings → General → Pull requests* before this workflow can function.
+> _Settings → General → Pull requests_ before this workflow can function.
 
 ---
 
@@ -56,17 +56,16 @@ The workflow runs `.github/scripts/update_readme_status.py`, which inspects
 the repository for key indicator files to decide whether each implementation
 milestone is complete:
 
-| Step | Indicator |
-|------|-----------|
-| 1 — iOS app shell | `ios/EasyTime/Views/ContentView.swift` exists and is non-empty |
-| 2 — Backend API contract | `backend/app/main.py` exists and is non-empty |
-| 3 — GTFS import | Any file matching `*gtfs*`, `*ingest*`, or `*import*` under `backend/app/` |
-| 4 — iOS networking | `ios/EasyTime/Networking/` or `ios/EasyTime/Services/` directory exists |
-| 5 — WidgetKit | `ios/EasyTimeWidget/` directory exists |
+| Step                     | Indicator                                                                  |
+| ------------------------ | -------------------------------------------------------------------------- |
+| 1 — iOS app shell        | `ios/EasyTime/Views/ContentView.swift` exists and is non-empty             |
+| 2 — Backend API contract | `backend/app/main.py` exists and is non-empty                              |
+| 3 — GTFS import          | Any file matching `*gtfs*`, `*ingest*`, or `*import*` under `backend/app/` |
+| 4 — iOS networking       | `ios/EasyTime/Networking/` or `ios/EasyTime/Services/` directory exists    |
+| 5 — WidgetKit            | `ios/EasyTimeWidget/` directory exists                                     |
 
 If the table changes, the workflow automatically opens an `automerge`-labelled
 pull request (`docs/auto-sync-readme`) which is merged once repository validation passes.
-
 
 ---
 
@@ -77,12 +76,12 @@ Triggered on every pull request open or synchronise event.
 Applies one of the following labels based on total lines changed:
 
 | Label | Lines changed |
-|-------|--------------|
-| `xs` | 0 – 10 |
-| `s` | 11 – 50 |
-| `m` | 51 – 200 |
-| `l` | 201 – 500 |
-| `xl` | 500+ |
+| ----- | ------------- |
+| `xs`  | 0 – 10        |
+| `s`   | 11 – 50       |
+| `m`   | 51 – 200      |
+| `l`   | 201 – 500     |
+| `xl`  | 500+          |
 
 ---
 
@@ -106,13 +105,13 @@ Triggered on push to `main` and pull request events.
 Maintains a **draft GitHub release** whose body is automatically populated from
 merged PR titles, categorised by label:
 
-| Category | Labels |
-|----------|--------|
-| 🚀 Features | `feat`, `feature` |
-| 🐛 Bug Fixes | `fix`, `bug` |
-| 📖 Documentation | `docs`, `documentation` |
-| 🧹 Maintenance | `chore`, `refactor`, `ci` |
-| 🔐 Security | `security` |
+| Category         | Labels                    |
+| ---------------- | ------------------------- |
+| 🚀 Features      | `feat`, `feature`         |
+| 🐛 Bug Fixes     | `fix`, `bug`              |
+| 📖 Documentation | `docs`, `documentation`   |
+| 🧹 Maintenance   | `chore`, `refactor`, `ci` |
+| 🔐 Security      | `security`                |
 
 Publish the draft release manually when you are ready to tag a version.
 
@@ -123,6 +122,7 @@ Publish the draft release manually when you are ready to tag a version.
 Triggered whenever a pull request targeting `main` is **opened**, **reopened**, or **marked ready for review**.
 
 Sends a formatted Slack Block Kit card to your team's Slack channel containing:
+
 - PR title & link
 - Author username & avatar
 - Target and source branches
@@ -145,20 +145,20 @@ The following settings must be configured manually in
 
 ### Required for auto-merge
 
-1. *Settings → General → Pull requests* → enable **Allow auto-merge**.
-2. *Settings → General → Pull requests* → enable **Automatically delete head
+1. _Settings → General → Pull requests_ → enable **Allow auto-merge**.
+2. _Settings → General → Pull requests_ → enable **Automatically delete head
    branches** (keeps the branch list tidy after squash merges).
 
 ### Required for Slack notifications
 
-1. Create an Incoming Webhook in Slack (*Slack App Directory → Incoming WebHooks → Add to Slack*).
+1. Create an Incoming Webhook in Slack (_Slack App Directory → Incoming WebHooks → Add to Slack_).
 2. Choose the channel where notifications should be posted and copy the Webhook URL.
 3. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
 4. Set Name: `SLACK_WEBHOOK_URL` and Value: your Slack webhook URL.
 
 ### Required for monday.com sync
 
-1. Generate a Personal API Token on monday.com (*Profile Avatar → Developers → My Access Tokens*).
+1. Generate a Personal API Token on monday.com (_Profile Avatar → Developers → My Access Tokens_).
 2. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
 3. Set Name: `MONDAY_API_KEY` and Value: your monday.com API token.
 
@@ -166,7 +166,6 @@ The following settings must be configured manually in
 
 Follow the steps in `.github/MAIN_BRANCH_RULESET.md` to protect `main` and
 require the `Validate repository` check before merging.
-
 
 ---
 
