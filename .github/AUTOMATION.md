@@ -13,9 +13,12 @@ Triggered on every pull request and push to `main`.
 
 - Verifies required project files exist (`README.md`, `SECURITY.md`, etc.)
 - Lints Markdown and YAML with `super-linter`
+- Runs backend unit and integration tests and Ruff linting
+- Automatically posts a summary comment and grants approval on the pull request when all checks pass
 
 Add new stack checks here as each implementation milestone is completed (see
 `MAIN_BRANCH_RULESET.md`).
+
 
 ---
 
