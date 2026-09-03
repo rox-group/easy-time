@@ -14,12 +14,12 @@ jobs:
     name: Draft next release
     runs-on: ubuntu-latest
     steps:
-      - uses: release-drafter/release-drafter@v6
+      - uses: release-drafter/release-drafter@v7
       - name: Check out source
         uses: actions/checkout@v7
 
       - name: Draft next release
-        uses: release-drafter/release-drafter@v6
+        uses: release-drafter/release-drafter@v7
         with:
           config-name: release-drafter-config.yml
         env:
