@@ -19,7 +19,6 @@ Triggered on every pull request and push to `main`.
 Add new stack checks here as each implementation milestone is completed (see
 `MAIN_BRANCH_RULESET.md`).
 
-
 ---
 
 ### `auto-merge.yml` — Automatic merge
@@ -72,11 +71,13 @@ pull request (`docs/auto-sync-readme`) which is merged once repository validatio
 
 ---
 
-### `label-pr.yml` — PR size labeller
+### `label-pr.yml` — PR size labeller and author assignment
 
-Triggered on every pull request open or synchronise event.
+Triggered on every pull request open, synchronize, or reopen event.
 
-Applies one of the following labels based on total lines changed:
+- Automatically assigns the pull request to the author who created it.
+- Applies one of the following labels based on total lines changed:
+
 
 | Label | Lines changed |
 | ----- | ------------- |
@@ -150,7 +151,6 @@ Triggered on every `push` to `main` and manually via `workflow_dispatch`.
 
 ---
 
-
 ## One-time repository settings
 
 The following settings must be configured manually in
@@ -175,7 +175,15 @@ The following settings must be configured manually in
 2. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
 3. Set Name: `MONDAY_API_KEY` and Value: your monday.com API token.
 
+### Optional for posting CI comments as your personal GitHub account
+
+1. Generate a Personal Access Token on GitHub (_Profile Avatar → Settings → Developer Settings → Personal access tokens_ with `repo` scope).
+2. In GitHub: go to **Settings → Secrets and variables → Actions → New repository secret**.
+3. Set Name: `USER_PAT` and Value: your personal access token.
+4. If omitted, CI comments and reviews are posted by `github-actions[bot]`.
+
 ### Required for the branch ruleset
+
 
 Follow the steps in `.github/MAIN_BRANCH_RULESET.md` to protect `main` and
 require the `Validate repository` check before merging.

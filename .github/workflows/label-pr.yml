@@ -2,17 +2,25 @@ name: Label PR
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  size-label:
-    name: Apply size label
+  metadata:
+    name: Apply metadata & size label
     runs-on: ubuntu-latest
     steps:
+      - name: Assign PR to author
+        run: |
+          gh pr edit "$PR_URL" --add-assignee "$PR_AUTHOR" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+
       - name: Label PR by size
         uses: CodelyTV/pr-size-labeler@v1
         with:
@@ -22,3 +30,4 @@ jobs:
           m_max_size: 200
           l_max_size: 500
           fail_if_xl: false
+
