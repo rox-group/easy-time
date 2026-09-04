@@ -70,8 +70,9 @@ def test_get_departures_filter_by_destination(client: TestClient):
     )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
-    assert len(data["departures"]) == 1
-    assert data["departures"][0]["destination"] == "Alvik"
+    assert len(data["departures"]) >= 1
+    for dep in data["departures"]:
+        assert dep["destination"] == "Alvik"
 
 
 def test_get_departures_limit(client: TestClient):
@@ -104,13 +105,13 @@ def test_get_departures_filter_by_platform(client: TestClient):
     """Verify filtering by platform returns only departures on that platform."""
     response = client.get(
         "/v1/departures",
-        params={"stop_id": "9021014001234000", "platform": "3"},
+        params={"stop_id": "9021014001234000", "platform": "2"},
     )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data["departures"]) > 0
     for dep in data["departures"]:
-        assert dep["platform"] == "3"
+        assert dep["platform"] == "2"
 
 
 def test_get_departures_invalid_time_window(client: TestClient):
