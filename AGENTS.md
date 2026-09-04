@@ -53,4 +53,3 @@ journeys, rather than providing a general journey-planning experience.
 3. [ ] **Step 3 (Next):** Implement GTFS static import and GTFS-Realtime polling in the backend.
 4. [ ] **Step 4:** Connect the iOS client to the backend and add tests.
 5. [ ] **Step 5:** Add WidgetKit and local departure reminders.
-
