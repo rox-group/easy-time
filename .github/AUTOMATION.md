@@ -150,6 +150,29 @@ Triggered on every `push` to `main` and manually via `workflow_dispatch`.
 
 ---
 
+### `delete-pr-branch.yml` — Auto-delete PR head branch
+
+Triggered whenever a pull request is **closed** (including when merged).
+
+- Checks that the PR head branch belongs to the internal repository (not an external fork).
+- Verifies that the branch is not protected or a critical default branch (`main`, `master`, `release/*`, etc.).
+- Automatically deletes the remote head branch reference to keep the branch list clean.
+
+---
+
+### `clean-stale-branches.yml` — Stale and merged branch cleanup
+
+Triggered daily at 08:00 UTC and manually via `workflow_dispatch`.
+
+- Scans all remote branches across the repository.
+- Safely excludes protected and default branches (`main`, `master`, `release/*`, etc.).
+- Safely excludes branches that have open pull requests.
+- Identifies and deletes branches that are already fully merged into `main`.
+- Identifies and deletes unmerged branches that have been inactive (no commits) for 30+ days.
+- Supports a `dry_run` manual dispatch option to preview cleanable branches without deleting them.
+
+---
+
 ## One-time repository settings
 
 The following settings must be configured manually in
