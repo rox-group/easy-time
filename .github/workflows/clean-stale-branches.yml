@@ -1,0 +1,143 @@
+name: Clean stale branches
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (inspect branches without deleting)'
+        required: true
+        type: boolean
+        default: false
+      days_stale:
+        description: 'Number of days of inactivity before an unmerged branch is considered stale'
+        required: true
+        type: number
+        default: 30
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  clean-branches:
+    name: Find and clean stale/merged branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean stale and merged branches
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const dryRun = context.payload.inputs ? (context.payload.inputs.dry_run === 'true' || context.payload.inputs.dry_run === true) : false;
+            const daysStale = (context.payload.inputs && context.payload.inputs.days_stale) ? Number(context.payload.inputs.days_stale) : 30;
+            const cutoffDate = new Date(Date.now() - daysStale * 24 * 60 * 60 * 1000);
+
+            const defaultBranch = (context.payload.repository && context.payload.repository.default_branch) || 'main';
+            const protectedBranchPatterns = ['main', 'master', 'develop', 'release', 'production'];
+
+            console.log(`Configuration: dryRun=${dryRun}, daysStale=${daysStale} (cutoff: ${cutoffDate.toISOString()})`);
+
+            // 1. Fetch all open PRs to avoid deleting active branches
+            const openPRBranches = new Set();
+            for await (const response of github.paginate.iterator(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            })) {
+              for (const pr of response.data) {
+                if (pr.head.repo && pr.head.repo.full_name === `${context.repo.owner}/${context.repo.repo}`) {
+                  openPRBranches.add(pr.head.ref);
+                }
+              }
+            }
+            console.log(`Found ${openPRBranches.size} active open PR branch(es):`, Array.from(openPRBranches));
+
+            // 2. Fetch all branches
+            const branchesToDelete = [];
+            for await (const response of github.paginate.iterator(github.rest.repos.listBranches, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              protected: false,
+              per_page: 100
+            })) {
+              for (const branch of response.data) {
+                const branchName = branch.name;
+
+                // Skip protected branches or default branch
+                if (
+                  branchName === defaultBranch ||
+                  protectedBranchPatterns.includes(branchName) ||
+                  branchName.startsWith('release/')
+                ) {
+                  continue;
+                }
+
+                // Skip branches associated with open PRs
+                if (openPRBranches.has(branchName)) {
+                  console.log(`Skipping branch "${branchName}" because it has an open PR.`);
+                  continue;
+                }
+
+                // Check branch commit comparison against default branch
+                try {
+                  const comparison = await github.rest.repos.compareCommitsWithBasehead({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    basehead: `${defaultBranch}...${branchName}`
+                  });
+
+                  // If branch is ahead by 0 commits, it is fully merged into default branch
+                  if (comparison.data.ahead_by === 0) {
+                    console.log(`Branch "${branchName}" is fully merged into ${defaultBranch}.`);
+                    branchesToDelete.push({ name: branchName, reason: `Merged into ${defaultBranch}` });
+                    continue;
+                  }
+
+                  // For unmerged branches, check the last commit timestamp
+                  const lastCommit = await github.rest.repos.getCommit({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: branch.commit.sha
+                  });
+
+                  const commitDate = new Date(lastCommit.data.commit.committer.date || lastCommit.data.commit.author.date);
+                  if (commitDate < cutoffDate) {
+                    console.log(`Branch "${branchName}" is stale (last commit on ${commitDate.toISOString()} is older than ${daysStale} days).`);
+                    branchesToDelete.push({ name: branchName, reason: `Stale (inactive since ${commitDate.toISOString().split('T')[0]})` });
+                  }
+                } catch (err) {
+                  console.error(`Could not check branch "${branchName}": ${err.message}`);
+                }
+              }
+            }
+
+            console.log(`\nIdentified ${branchesToDelete.length} branch(es) for cleanup:`);
+            for (const b of branchesToDelete) {
+              console.log(` - ${b.name} (${b.reason})`);
+            }
+
+            if (branchesToDelete.length === 0) {
+              console.log('No branches to clean up.');
+              return;
+            }
+
+            if (dryRun) {
+              console.log('\n[Dry Run] Skipping deletion.');
+              return;
+            }
+
+            console.log('\nDeleting branches...');
+            for (const b of branchesToDelete) {
+              try {
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `heads/${b.name}`
+                });
+                console.log(`✓ Deleted branch "${b.name}"`);
+              } catch (err) {
+                console.error(`✗ Failed to delete branch "${b.name}": ${err.message}`);
+              }
+            }
