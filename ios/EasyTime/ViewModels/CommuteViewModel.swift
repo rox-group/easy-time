@@ -10,7 +10,7 @@ public final class CommuteViewModel: ObservableObject {
     @Published public var freshnessAt: Date? = nil
     @Published public var lastRefreshedAt: Date? = nil
 
-    private let departuresService: DeparturesServiceProtocol
+    public let departuresService: DeparturesServiceProtocol
 
     public init(
         commute: SavedCommute,
@@ -34,8 +34,23 @@ public final class CommuteViewModel: ObservableObject {
         }
     }
 
+    public func updateCommute(_ updatedCommute: SavedCommute) {
+        self.commute = updatedCommute
+        Task {
+            await fetchDeparturesForCurrentLeg()
+        }
+    }
+
     public func refresh() async {
         await fetchDeparturesForCurrentLeg()
+    }
+
+    public func searchStops(query: String) async -> [TransitStop] {
+        do {
+            return try await departuresService.searchStops(query: query)
+        } catch {
+            return TransitStop.presetStops
+        }
     }
 
     public func fetchDeparturesForCurrentLeg() async {
@@ -77,4 +92,3 @@ public final class CommuteViewModel: ObservableObject {
         }
     }
 }
-
