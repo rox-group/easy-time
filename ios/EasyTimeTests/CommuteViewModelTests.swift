@@ -16,6 +16,10 @@ struct MockDeparturesService: DeparturesServiceProtocol {
     ) async throws -> APIDeparturesResponse {
         try responseResult.get()
     }
+
+    func searchStops(query: String) async throws -> [TransitStop] {
+        TransitStop.presetStops
+    }
 }
 
 @MainActor
