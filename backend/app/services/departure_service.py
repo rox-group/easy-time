@@ -138,7 +138,6 @@ class DepartureService:
             JOIN trips t ON st.trip_id = t.trip_id
             JOIN routes r ON t.route_id = r.route_id
             JOIN stops s ON st.stop_id = s.stop_id
-            WHERE (st.stop_id = ? OR s.parent_station = ?)
             WHERE (
                 st.stop_id = ?
                 OR s.parent_station = ?
@@ -149,7 +148,6 @@ class DepartureService:
             ORDER BY {order_by}
         """
 
-        params = [query.stop_id, query.stop_id, *active_services, *time_params]
         params = [
             query.stop_id,
             query.stop_id,
