@@ -4,13 +4,16 @@ public struct EditCommuteView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var commuteName: String
+
     @State private var outboundBoardingId: String
     @State private var outboundBoardingName: String
+    @State private var outboundDestId: String
     @State private var outboundDestination: String
     @State private var outboundWalkMinutes: Int
 
     @State private var returnBoardingId: String
     @State private var returnBoardingName: String
+    @State private var returnDestId: String
     @State private var returnDestination: String
     @State private var returnWalkMinutes: Int
 
@@ -33,13 +36,16 @@ public struct EditCommuteView: View {
         let returnLeg = commute.leg(for: .returnTrip)
 
         _commuteName = State(initialValue: commute.name)
+
         _outboundBoardingId = State(initialValue: outbound.stopId)
         _outboundBoardingName = State(initialValue: outbound.boardingStop)
+        _outboundDestId = State(initialValue: returnLeg.stopId)
         _outboundDestination = State(initialValue: outbound.destination)
         _outboundWalkMinutes = State(initialValue: outbound.walkingBufferMinutes)
 
         _returnBoardingId = State(initialValue: returnLeg.stopId)
         _returnBoardingName = State(initialValue: returnLeg.boardingStop)
+        _returnDestId = State(initialValue: outbound.stopId)
         _returnDestination = State(initialValue: returnLeg.destination)
         _returnWalkMinutes = State(initialValue: returnLeg.walkingBufferMinutes)
     }
@@ -48,31 +54,42 @@ public struct EditCommuteView: View {
         NavigationStack {
             Form {
                 Section("Commute Name") {
-                    TextField("Name (e.g. Office, Gym)", text: $commuteName)
+                    TextField("Name (e.g. Office, Home)", text: $commuteName)
                 }
 
-                Section("Outbound (To work)") {
+                Section("Outbound Journey (To work)") {
                     NavigationLink {
                         StopPickerView(
-                            title: "Select Boarding Stop",
+                            title: "Select Boarding Station",
                             selectedStopId: $outboundBoardingId,
                             selectedStopName: $outboundBoardingName,
                             departuresService: departuresService
                         )
                     } label: {
                         HStack {
-                            Text("Boarding Stop")
+                            Text("From (Boarding)")
                             Spacer()
-                            Text(outboundBoardingName.isEmpty ? "Select stop" : outboundBoardingName)
+                            Text(outboundBoardingName.isEmpty ? "Select Station" : outboundBoardingName)
                                 .foregroundStyle(outboundBoardingName.isEmpty ? .secondary : .primary)
+                                .fontWeight(.medium)
                         }
                     }
 
-                    HStack {
-                        Text("Destination")
-                        Spacer()
-                        TextField("Towards station/headsign", text: $outboundDestination)
-                            .multilineTextAlignment(.trailing)
+                    NavigationLink {
+                        StopPickerView(
+                            title: "Select Destination Station",
+                            selectedStopId: $outboundDestId,
+                            selectedStopName: $outboundDestination,
+                            departuresService: departuresService
+                        )
+                    } label: {
+                        HStack {
+                            Text("To (Destination)")
+                            Spacer()
+                            Text(outboundDestination.isEmpty ? "Select Station" : outboundDestination)
+                                .foregroundStyle(outboundDestination.isEmpty ? .secondary : .primary)
+                                .fontWeight(.medium)
+                        }
                     }
 
                     Stepper(
@@ -82,31 +99,64 @@ public struct EditCommuteView: View {
                     )
                 }
 
-                Section("Return Trip (Home)") {
-                    Toggle("Sync reverse of outbound", isOn: $syncReturnWithOutbound)
+                Section {
+                    Button {
+                        swapLocations()
+                    } label: {
+                        Label("Swap Outbound & Return Stations", systemImage: "arrow.up.arrow.down")
+                            .font(.subheadline.weight(.medium))
+                    }
+                }
 
-                    if !syncReturnWithOutbound {
+                Section("Return Journey (Home)") {
+                    Toggle("Auto-reverse from Outbound", isOn: $syncReturnWithOutbound)
+
+                    if syncReturnWithOutbound {
+                        HStack {
+                            Text("From (Boarding)")
+                            Spacer()
+                            Text(outboundDestination.isEmpty ? "Same as Outbound To" : outboundDestination)
+                                .foregroundStyle(.secondary)
+                        }
+                        HStack {
+                            Text("To (Destination)")
+                            Spacer()
+                            Text(outboundBoardingName.isEmpty ? "Same as Outbound From" : outboundBoardingName)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
                         NavigationLink {
                             StopPickerView(
-                                title: "Select Return Stop",
+                                title: "Select Return Boarding",
                                 selectedStopId: $returnBoardingId,
                                 selectedStopName: $returnBoardingName,
                                 departuresService: departuresService
                             )
                         } label: {
                             HStack {
-                                Text("Boarding Stop")
+                                Text("From (Boarding)")
                                 Spacer()
-                                Text(returnBoardingName.isEmpty ? "Select stop" : returnBoardingName)
+                                Text(returnBoardingName.isEmpty ? "Select Station" : returnBoardingName)
                                     .foregroundStyle(returnBoardingName.isEmpty ? .secondary : .primary)
+                                    .fontWeight(.medium)
                             }
                         }
 
-                        HStack {
-                            Text("Destination")
-                            Spacer()
-                            TextField("Towards station/headsign", text: $returnDestination)
-                                .multilineTextAlignment(.trailing)
+                        NavigationLink {
+                            StopPickerView(
+                                title: "Select Return Destination",
+                                selectedStopId: $returnDestId,
+                                selectedStopName: $returnDestination,
+                                departuresService: departuresService
+                            )
+                        } label: {
+                            HStack {
+                                Text("To (Destination)")
+                                Spacer()
+                                Text(returnDestination.isEmpty ? "Select Station" : returnDestination)
+                                    .foregroundStyle(returnDestination.isEmpty ? .secondary : .primary)
+                                    .fontWeight(.medium)
+                            }
                         }
                     }
 
@@ -129,16 +179,37 @@ public struct EditCommuteView: View {
                     Button("Save") {
                         saveCommute()
                     }
-                    .disabled(outboundBoardingName.isEmpty)
+                    .disabled(outboundBoardingName.isEmpty || outboundDestination.isEmpty)
                 }
             }
         }
     }
 
+    private func swapLocations() {
+        let tempId = outboundBoardingId
+        let tempName = outboundBoardingName
+
+        outboundBoardingId = outboundDestId
+        outboundBoardingName = outboundDestination
+
+        outboundDestId = tempId
+        outboundDestination = tempName
+    }
+
     private func saveCommute() {
-        let retBoardingId = syncReturnWithOutbound ? (lookupStopId(name: outboundDestination) ?? returnBoardingId) : returnBoardingId
-        let retBoardingName = syncReturnWithOutbound ? outboundDestination : returnBoardingName
-        let retDest = syncReturnWithOutbound ? outboundBoardingName : returnDestination
+        let retBoardingId: String
+        let retBoardingName: String
+        let retDest: String
+
+        if syncReturnWithOutbound {
+            retBoardingId = outboundDestId.isEmpty ? (lookupStopId(name: outboundDestination) ?? returnBoardingId) : outboundDestId
+            retBoardingName = outboundDestination
+            retDest = outboundBoardingName
+        } else {
+            retBoardingId = returnBoardingId
+            retBoardingName = returnBoardingName
+            retDest = returnDestination
+        }
 
         let outboundLeg = CommuteLeg(
             stopId: outboundBoardingId,
@@ -187,4 +258,3 @@ public struct EditCommuteView: View {
 #Preview {
     EditCommuteView(commute: .officeFixture) { _ in }
 }
-
