@@ -15,9 +15,14 @@ def create_sample_gtfs_zip() -> bytes:
 9021014001234001,Skanstull,3,,59.3075,18.0755
 9021014001234002,T-Centralen,1,,59.3314,18.0617
 9021014001234003,Åkeshov,1,,59.3421,17.9254
+9021014001238000,Östermalmstorg,1,,59.3361,18.0753
+9021014001238001,Östermalmstorg,2,,59.3361,18.0753
+9021014001239000,Skärholmen,1,,59.2755,17.9069
+9021014001239001,Skärholmen,2,,59.2755,17.9069
 """
 
     routes_csv = """route_id,route_short_name,route_long_name,route_type
+13,13,Röda linjen 13,1
 17,17,Gröna linjen 17,1
 18,18,Gröna linjen 18,1
 43,43,Pendeltåg 43,2
@@ -73,6 +78,30 @@ HOLIDAY_SERVICE,20261225,1
             stop_times_lines.append(
                 f"{t43},9021014001234000,1,{hour:02d}:{(minute+6)%60:02d}:00,"
                 f"{hour:02d}:{(minute+6)%60:02d}:00,0,0"
+            )
+
+            # Route 13 outbound (Skärholmen -> Östermalmstorg -> Ropsten)
+            t13_out = f"TRIP_13_{hour:02d}{minute+1:02d}"
+            trips_lines.append(f"{t13_out},13,ALL_DAYS,Ropsten,0")
+            stop_times_lines.append(
+                f"{t13_out},9021014001239000,1,{hour:02d}:{(minute+1)%60:02d}:00,"
+                f"{hour:02d}:{(minute+1)%60:02d}:00,0,0"
+            )
+            stop_times_lines.append(
+                f"{t13_out},9021014001238000,2,{hour:02d}:{(minute+21)%60:02d}:00,"
+                f"{hour:02d}:{(minute+21)%60:02d}:00,0,0"
+            )
+
+            # Route 13 return (Östermalmstorg -> Skärholmen -> Norsborg)
+            t13_ret = f"TRIP_13_RET_{hour:02d}{minute+5:02d}"
+            trips_lines.append(f"{t13_ret},13,ALL_DAYS,Norsborg,1")
+            stop_times_lines.append(
+                f"{t13_ret},9021014001238001,1,{hour:02d}:{(minute+5)%60:02d}:00,"
+                f"{hour:02d}:{(minute+5)%60:02d}:00,0,0"
+            )
+            stop_times_lines.append(
+                f"{t13_ret},9021014001239001,2,{hour:02d}:{(minute+25)%60:02d}:00,"
+                f"{hour:02d}:{(minute+25)%60:02d}:00,0,0"
             )
 
     trips_csv = "\n".join(trips_lines) + "\n"

@@ -66,7 +66,11 @@ def test_get_departures_filter_by_destination(client: TestClient):
     """Verify filtering by destination headsign."""
     response = client.get(
         "/v1/departures",
-        params={"stop_id": "9021014001234000", "destination": "Alvik"},
+        params={
+            "stop_id": "9021014001234000",
+            "destination": "Alvik",
+            "time_window_minutes": 60,
+        },
     )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()

@@ -108,6 +108,18 @@ class DepartureService:
                 departures=[],
             )
 
+        if max_secs >= 86400:
+            time_clause = "(st.departure_time_secs >= ? OR st.departure_time_secs <= ?)"
+            time_params = [current_secs, max_secs % 86400]
+            order_by = (
+                f"CASE WHEN st.departure_time_secs >= {current_secs} THEN 0 ELSE 1 END, "
+                "st.departure_time_secs ASC"
+            )
+        else:
+            time_clause = "st.departure_time_secs >= ? AND st.departure_time_secs <= ?"
+            time_params = [current_secs, max_secs]
+            order_by = "st.departure_time_secs ASC"
+
         placeholders = ",".join("?" for _ in active_services)
         sql = f"""
             SELECT
@@ -128,18 +140,11 @@ class DepartureService:
             JOIN stops s ON st.stop_id = s.stop_id
             WHERE (st.stop_id = ? OR s.parent_station = ?)
               AND t.service_id IN ({placeholders})
-              AND st.departure_time_secs >= ?
-              AND st.departure_time_secs <= ?
-            ORDER BY st.departure_time_secs ASC
+              AND {time_clause}
+            ORDER BY {order_by}
         """
 
-        params = [
-            query.stop_id,
-            query.stop_id,
-            *active_services,
-            current_secs,
-            max_secs,
-        ]
+        params = [query.stop_id, query.stop_id, *active_services, *time_params]
 
         async with self.db.get_async_connection() as conn:
             async with conn.execute(sql, params) as cursor:
@@ -198,8 +203,11 @@ class DepartureService:
                     if norm_dir in ("1", "return") and direction_id != "1":
                         continue
 
-                # Compute scheduled departure time in UTC
-                scheduled_dt_stockholm = date_midnight_stockholm + timedelta(seconds=dep_secs)
+                # Compute scheduled departure time in UTC (handling next-day wrap)
+                day_offset = timedelta(days=1) if dep_secs < current_secs else timedelta(days=0)
+                scheduled_dt_stockholm = (
+                    date_midnight_stockholm + day_offset + timedelta(seconds=dep_secs)
+                )
                 scheduled_at_utc = scheduled_dt_stockholm.astimezone(timezone.utc)
 
                 # Check realtime overlay
