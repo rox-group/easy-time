@@ -133,115 +133,142 @@ class DepartureService:
             ORDER BY st.departure_time_secs ASC
         """
 
-        params = [query.stop_id, query.stop_id, *active_services, current_secs, max_secs]
+        params = [
+            query.stop_id,
+            query.stop_id,
+            *active_services,
+            current_secs,
+            max_secs,
+        ]
 
         async with self.db.get_async_connection() as conn:
             async with conn.execute(sql, params) as cursor:
                 rows = await cursor.fetchall()
 
-        for row in rows:
-            trip_id = row["trip_id"]
-            stop_id = row["stop_id"]
-            dep_secs = row["departure_time_secs"]
-            route_id = row["route_id"]
-            trip_headsign = row["trip_headsign"] or ""
-            direction_id = row["direction_id"] or ""
-            route_short_name = row["route_short_name"] or route_id
-            stop_name = row["stop_name"]
-            platform_code = row["platform_code"]
+            for row in rows:
+                trip_id = row["trip_id"]
+                stop_id = row["stop_id"]
+                dep_secs = row["departure_time_secs"]
+                route_id = row["route_id"]
+                trip_headsign = row["trip_headsign"] or ""
+                direction_id = row["direction_id"] or ""
+                route_short_name = row["route_short_name"] or route_id
+                stop_name = row["stop_name"]
+                platform_code = row["platform_code"]
 
-            # --- Apply Filters ---
-            # 1. Route filter
-            if query.route_id and query.route_id not in (route_id, route_short_name):
-                continue
-
-            # 2. Platform filter
-            if query.platform and platform_code != query.platform:
-                continue
-
-            # 3. Destination filter (case-insensitive substring)
-            if query.destination and query.destination.lower() not in trip_headsign.lower():
-                continue
-
-            # 4. Direction filter
-            if query.direction:
-                norm_dir = query.direction.lower()
-                if norm_dir in ("0", "outbound") and direction_id not in ("0", ""):
-                    continue
-                if norm_dir in ("1", "return") and direction_id != "1":
+                # --- Apply Filters ---
+                # 1. Route filter
+                if query.route_id and query.route_id not in (route_id, route_short_name):
                     continue
 
-            # Compute scheduled departure time in UTC
-            scheduled_dt_stockholm = date_midnight_stockholm + timedelta(seconds=dep_secs)
-            scheduled_at_utc = scheduled_dt_stockholm.astimezone(timezone.utc)
+                # 2. Platform filter
+                if query.platform and platform_code != query.platform:
+                    continue
 
-            # Check realtime overlay
-            trip_rt = self.rt_service.get_trip_update(trip_id)
-            stop_rt = self.rt_service.get_stop_update(trip_id, stop_id)
+                # 3. Destination filter (matches headsign or any downstream stop on the trip)
+                if query.destination:
+                    dest_query = query.destination.strip().casefold()
+                    matches_headsign = dest_query in trip_headsign.casefold()
+                    if not matches_headsign:
+                        downstream_sql = """
+                            SELECT s2.stop_name, s2.stop_id FROM stop_times st2
+                            JOIN stops s2 ON st2.stop_id = s2.stop_id
+                            WHERE st2.trip_id = ?
+                              AND st2.stop_sequence > ?
+                        """
+                        async with conn.execute(
+                            downstream_sql,
+                            (trip_id, row["stop_sequence"]),
+                        ) as d_cursor:
+                            downstream_rows = await d_cursor.fetchall()
 
-            is_realtime = False
-            predicted_at_utc = None
-            delay_minutes = None
-            status = DepartureStatus.SCHEDULED
+                        has_downstream = any(
+                            dest_query in (s_row["stop_name"] or "").casefold()
+                            or query.destination.strip() == s_row["stop_id"]
+                            for s_row in downstream_rows
+                        )
+                        if not has_downstream:
+                            continue
 
-            if trip_rt and trip_rt.schedule_relationship == "CANCELED":
-                status = DepartureStatus.CANCELLED
-                is_realtime = True
-            elif stop_rt and stop_rt.schedule_relationship == "SKIPPED":
-                status = DepartureStatus.CANCELLED
-                is_realtime = True
-            elif stop_rt and (
-                stop_rt.predicted_time or stop_rt.delay_seconds is not None
-            ):
-                is_realtime = True
-                if stop_rt.predicted_time:
-                    predicted_at_utc = stop_rt.predicted_time
-                    delay_seconds = (
-                        predicted_at_utc - scheduled_at_utc
-                    ).total_seconds()
-                    delay_minutes = int(round(delay_seconds / 60))
-                elif stop_rt.delay_seconds is not None:
-                    delay_minutes = int(round(stop_rt.delay_seconds / 60))
+                # 4. Direction filter
+                if query.direction:
+                    norm_dir = query.direction.lower()
+                    if norm_dir in ("0", "outbound") and direction_id not in ("0", ""):
+                        continue
+                    if norm_dir in ("1", "return") and direction_id != "1":
+                        continue
+
+                # Compute scheduled departure time in UTC
+                scheduled_dt_stockholm = date_midnight_stockholm + timedelta(seconds=dep_secs)
+                scheduled_at_utc = scheduled_dt_stockholm.astimezone(timezone.utc)
+
+                # Check realtime overlay
+                trip_rt = self.rt_service.get_trip_update(trip_id)
+                stop_rt = self.rt_service.get_stop_update(trip_id, stop_id)
+
+                is_realtime = False
+                predicted_at_utc = None
+                delay_minutes = None
+                status = DepartureStatus.SCHEDULED
+
+                if trip_rt and trip_rt.schedule_relationship == "CANCELED":
+                    status = DepartureStatus.CANCELLED
+                    is_realtime = True
+                elif stop_rt and stop_rt.schedule_relationship == "SKIPPED":
+                    status = DepartureStatus.CANCELLED
+                    is_realtime = True
+                elif stop_rt and (
+                    stop_rt.predicted_time or stop_rt.delay_seconds is not None
+                ):
+                    is_realtime = True
+                    if stop_rt.predicted_time:
+                        predicted_at_utc = stop_rt.predicted_time
+                        delay_seconds = (
+                            predicted_at_utc - scheduled_at_utc
+                        ).total_seconds()
+                        delay_minutes = int(round(delay_seconds / 60))
+                    elif stop_rt.delay_seconds is not None:
+                        delay_minutes = int(round(stop_rt.delay_seconds / 60))
+                        predicted_at_utc = scheduled_at_utc + timedelta(
+                            seconds=stop_rt.delay_seconds
+                        )
+
+                    if delay_minutes > 0:
+                        status = DepartureStatus.DELAYED
+                    elif delay_minutes < 0:
+                        status = DepartureStatus.EARLY
+                    else:
+                        status = DepartureStatus.ON_TIME
+                elif trip_rt and trip_rt.trip_delay_seconds is not None:
+                    is_realtime = True
+                    delay_minutes = int(round(trip_rt.trip_delay_seconds / 60))
                     predicted_at_utc = scheduled_at_utc + timedelta(
-                        seconds=stop_rt.delay_seconds
+                        seconds=trip_rt.trip_delay_seconds
                     )
+                    if delay_minutes > 0:
+                        status = DepartureStatus.DELAYED
+                    elif delay_minutes < 0:
+                        status = DepartureStatus.EARLY
+                    else:
+                        status = DepartureStatus.ON_TIME
 
-                if delay_minutes > 0:
-                    status = DepartureStatus.DELAYED
-                elif delay_minutes < 0:
-                    status = DepartureStatus.EARLY
-                else:
-                    status = DepartureStatus.ON_TIME
-            elif trip_rt and trip_rt.trip_delay_seconds is not None:
-                is_realtime = True
-                delay_minutes = int(round(trip_rt.trip_delay_seconds / 60))
-                predicted_at_utc = scheduled_at_utc + timedelta(
-                    seconds=trip_rt.trip_delay_seconds
+                departure_item = DepartureItem(
+                    route=route_short_name,
+                    destination=trip_headsign,
+                    scheduled_at=scheduled_at_utc,
+                    predicted_at=predicted_at_utc,
+                    platform=platform_code,
+                    status=status,
+                    trip_id=trip_id,
+                    stop_id=stop_id,
+                    stop_name=stop_name,
+                    delay_minutes=delay_minutes,
+                    is_realtime=is_realtime,
                 )
-                if delay_minutes > 0:
-                    status = DepartureStatus.DELAYED
-                elif delay_minutes < 0:
-                    status = DepartureStatus.EARLY
-                else:
-                    status = DepartureStatus.ON_TIME
+                departures.append(departure_item)
 
-            departure_item = DepartureItem(
-                route=route_short_name,
-                destination=trip_headsign,
-                scheduled_at=scheduled_at_utc,
-                predicted_at=predicted_at_utc,
-                platform=platform_code,
-                status=status,
-                trip_id=trip_id,
-                stop_id=stop_id,
-                stop_name=stop_name,
-                delay_minutes=delay_minutes,
-                is_realtime=is_realtime,
-            )
-            departures.append(departure_item)
-
-            if len(departures) >= query.limit:
-                break
+                if len(departures) >= query.limit:
+                    break
 
         return DeparturesResponse(
             generated_at=now_utc,
