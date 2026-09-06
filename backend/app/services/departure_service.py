@@ -139,12 +139,24 @@ class DepartureService:
             JOIN routes r ON t.route_id = r.route_id
             JOIN stops s ON st.stop_id = s.stop_id
             WHERE (st.stop_id = ? OR s.parent_station = ?)
+            WHERE (
+                st.stop_id = ?
+                OR s.parent_station = ?
+                OR s.stop_name = (SELECT stop_name FROM stops WHERE stop_id = ?)
+            )
               AND t.service_id IN ({placeholders})
               AND {time_clause}
             ORDER BY {order_by}
         """
 
         params = [query.stop_id, query.stop_id, *active_services, *time_params]
+        params = [
+            query.stop_id,
+            query.stop_id,
+            query.stop_id,
+            *active_services,
+            *time_params,
+        ]
 
         async with self.db.get_async_connection() as conn:
             async with conn.execute(sql, params) as cursor:
