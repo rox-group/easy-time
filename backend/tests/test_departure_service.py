@@ -54,8 +54,12 @@ async def test_get_departures_unfiltered(populated_departure_service):
     assert response.freshness_at is not None
     assert len(response.departures) >= 4
 
+    # Find and verify departures by trip_id
+    deps_by_trip = {d.trip_id: d for d in response.departures}
+
     # Trip 17_0800: 08:00 scheduled, on time / scheduled
     d0 = response.departures[0]
+    d0 = deps_by_trip["TRIP_17_0800"]
     assert d0.route == "17"
     assert d0.destination == "Åkeshov"
     assert d0.status == DepartureStatus.SCHEDULED
@@ -63,6 +67,7 @@ async def test_get_departures_unfiltered(populated_departure_service):
 
     # Trip 18_0802: 08:02 scheduled, delayed by 3 min (predicted 08:05)
     d1 = response.departures[1]
+    d1 = deps_by_trip["TRIP_18_0802"]
     assert d1.route == "18"
     assert d1.destination == "Alvik"
     assert d1.status == DepartureStatus.DELAYED
@@ -72,11 +77,13 @@ async def test_get_departures_unfiltered(populated_departure_service):
 
     # Trip 43_0806: 08:06 scheduled
     d2 = response.departures[2]
+    d2 = deps_by_trip["TRIP_43_0806"]
     assert d2.route == "43"
     assert d2.destination == "Bålsta"
 
     # Trip 17_0810: 08:10 scheduled, cancelled
     d3 = response.departures[3]
+    d3 = deps_by_trip["TRIP_17_0810"]
     assert d3.route == "17"
     assert d3.destination == "Åkeshov"
     assert d3.status == DepartureStatus.CANCELLED
