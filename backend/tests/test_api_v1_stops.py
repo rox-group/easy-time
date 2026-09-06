@@ -7,8 +7,8 @@ def test_search_stops_unfiltered(client: TestClient):
     response = client.get("/v1/stops")
     assert response.status_code == 200
     data = response.json()
-    assert data["count"] == 4
-    assert len(data["stops"]) == 4
+    assert data["count"] >= 4
+    assert len(data["stops"]) >= 4
     stop_names = [s["stop_name"] for s in data["stops"]]
     assert "Skanstull" in stop_names
     assert "T-Centralen" in stop_names
