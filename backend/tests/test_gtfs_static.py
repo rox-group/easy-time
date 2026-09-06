@@ -34,12 +34,12 @@ def test_gtfs_static_import(tmp_path):
     zip_bytes = create_sample_gtfs_zip()
     counts = importer.import_from_zip(zip_bytes)
 
-    assert counts["stops"] == 4
-    assert counts["routes"] == 3
+    assert counts["stops"] == 8
+    assert counts["routes"] == 4
     assert counts["calendar"] == 2
     assert counts["calendar_dates"] == 2
-    assert counts["trips"] == 576
-    assert counts["stop_times"] == 576
+    assert counts["trips"] == 864
+    assert counts["stop_times"] == 1152
 
     conn = db.get_sync_connection()
     try:
@@ -47,7 +47,7 @@ def test_gtfs_static_import(tmp_path):
         stops = conn.execute(
             "SELECT stop_id, stop_name, platform_code FROM stops ORDER BY stop_id"
         ).fetchall()
-        assert len(stops) == 4
+        assert len(stops) == 8
         assert stops[0]["stop_id"] == "9021014001234000"
         assert stops[0]["stop_name"] == "Skanstull"
         assert stops[0]["platform_code"] == "2"
@@ -56,7 +56,7 @@ def test_gtfs_static_import(tmp_path):
         routes = conn.execute(
             "SELECT route_id, route_short_name FROM routes ORDER BY route_id"
         ).fetchall()
-        assert len(routes) == 3
+        assert len(routes) == 4
 
         # Check stop_times departure seconds conversion
         query = (
