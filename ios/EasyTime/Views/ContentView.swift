@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ContentView: View {
     @StateObject private var viewModel: CommuteViewModel
+    @State private var isShowingEditSheet: Bool = false
 
     public init(commute: SavedCommute, departuresService: DeparturesServiceProtocol = DeparturesAPIService()) {
         _viewModel = StateObject(
@@ -116,8 +117,18 @@ public struct ContentView: View {
             .navigationTitle(viewModel.commute.name)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Edit", systemImage: "slider.horizontal.3") {}
-                        .accessibilityHint("Editing saved commutes will be added next.")
+                    Button("Edit", systemImage: "slider.horizontal.3") {
+                        isShowingEditSheet = true
+                    }
+                    .accessibilityLabel("Edit commute")
+                }
+            }
+            .sheet(isPresented: $isShowingEditSheet) {
+                EditCommuteView(
+                    commute: viewModel.commute,
+                    departuresService: viewModel.departuresService
+                ) { updatedCommute in
+                    viewModel.updateCommute(updatedCommute)
                 }
             }
             .refreshable {
