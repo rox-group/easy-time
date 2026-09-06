@@ -9,10 +9,15 @@
 /* Begin PBXBuildFile section */
 		0F263C330DBCB5DF07755BF7 /* CommuteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE23887E6B89C42ACEB0374 /* CommuteViewModel.swift */; };
 		116C71B59E26FC070408CB77 /* Commute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E11B805B81DEED202312E2E /* Commute.swift */; };
+		17372DB536DD1AB9F993E454 /* StopPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B24DD69AB60F21883845E1 /* StopPickerView.swift */; };
+		4F75A8F0DA09ECC03E7441F2 /* EditCommuteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76A71EE949BA5CE6434D78C /* EditCommuteView.swift */; };
 		58C12A9A25608136F980A3BF /* CommuteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */; };
+		690E7B3E6EEF3C368E82FB35 /* StopSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33694B43FE12EA7979334D0D /* StopSearchTests.swift */; };
+		6DAB96E4835D758198FE98FC /* StopModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F92DBD513A7B6080934BE6 /* StopModels.swift */; };
 		7DD67357CDD811191F554A6D /* DeparturesAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E38A83C7B4E3409246645C4 /* DeparturesAPIServiceTests.swift */; };
 		98253D73AB2BDE0FA9EA40CD /* DeparturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1AAA79D200D77AFDD44A70B /* DeparturesService.swift */; };
 		9F4520EE6B2914B02E4F67BD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE53685208483B8387A8DC6 /* ContentView.swift */; };
+		AACF8BD231D22F96D7F23425 /* EditCommuteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C65CBD0A49F727D4DCCC63C /* EditCommuteTests.swift */; };
 		B5382861C8BC5E835C235FC5 /* EasyTimeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */; };
 		DB2FC7630AC851A14D7739D3 /* CommuteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4A7CE0CCD4008F6A2FB9E0 /* CommuteViewModelTests.swift */; };
 		E6A30E9DBE1D8F832F824990 /* CommuteFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */; };
@@ -30,18 +35,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		15B24DD69AB60F21883845E1 /* StopPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopPickerView.swift; sourceTree = "<group>"; };
 		16718FBA8FEB0F9BCD99E525 /* EasyTimeTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = EasyTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33694B43FE12EA7979334D0D /* StopSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopSearchTests.swift; sourceTree = "<group>"; };
 		3E341A1EDE260A08DC6CA653 /* DepartureAPIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepartureAPIModels.swift; sourceTree = "<group>"; };
 		5BE23887E6B89C42ACEB0374 /* CommuteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteViewModel.swift; sourceTree = "<group>"; };
 		5E11B805B81DEED202312E2E /* Commute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commute.swift; sourceTree = "<group>"; };
 		655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteTests.swift; sourceTree = "<group>"; };
+		7C65CBD0A49F727D4DCCC63C /* EditCommuteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCommuteTests.swift; sourceTree = "<group>"; };
 		7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyTimeApp.swift; sourceTree = "<group>"; };
 		7E38A83C7B4E3409246645C4 /* DeparturesAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeparturesAPIServiceTests.swift; sourceTree = "<group>"; };
 		8F4A7CE0CCD4008F6A2FB9E0 /* CommuteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteViewModelTests.swift; sourceTree = "<group>"; };
+		90F92DBD513A7B6080934BE6 /* StopModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopModels.swift; sourceTree = "<group>"; };
 		9E81CE223D44D336A9991FB2 /* EasyTime.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = EasyTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1AAA79D200D77AFDD44A70B /* DeparturesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeparturesService.swift; sourceTree = "<group>"; };
 		A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteFixtures.swift; sourceTree = "<group>"; };
 		ADE53685208483B8387A8DC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E76A71EE949BA5CE6434D78C /* EditCommuteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCommuteView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -59,6 +69,7 @@
 			children = (
 				5E11B805B81DEED202312E2E /* Commute.swift */,
 				3E341A1EDE260A08DC6CA653 /* DepartureAPIModels.swift */,
+				90F92DBD513A7B6080934BE6 /* StopModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -105,6 +116,8 @@
 			isa = PBXGroup;
 			children = (
 				ADE53685208483B8387A8DC6 /* ContentView.swift */,
+				E76A71EE949BA5CE6434D78C /* EditCommuteView.swift */,
+				15B24DD69AB60F21883845E1 /* StopPickerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -123,6 +136,8 @@
 				655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */,
 				8F4A7CE0CCD4008F6A2FB9E0 /* CommuteViewModelTests.swift */,
 				7E38A83C7B4E3409246645C4 /* DeparturesAPIServiceTests.swift */,
+				7C65CBD0A49F727D4DCCC63C /* EditCommuteTests.swift */,
+				33694B43FE12EA7979334D0D /* StopSearchTests.swift */,
 			);
 			path = EasyTimeTests;
 			sourceTree = "<group>";
@@ -214,6 +229,9 @@
 				EB7FF5E32178E677AECB4B3A /* DepartureAPIModels.swift in Sources */,
 				98253D73AB2BDE0FA9EA40CD /* DeparturesService.swift in Sources */,
 				B5382861C8BC5E835C235FC5 /* EasyTimeApp.swift in Sources */,
+				4F75A8F0DA09ECC03E7441F2 /* EditCommuteView.swift in Sources */,
+				6DAB96E4835D758198FE98FC /* StopModels.swift in Sources */,
+				17372DB536DD1AB9F993E454 /* StopPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +242,8 @@
 				58C12A9A25608136F980A3BF /* CommuteTests.swift in Sources */,
 				DB2FC7630AC851A14D7739D3 /* CommuteViewModelTests.swift in Sources */,
 				7DD67357CDD811191F554A6D /* DeparturesAPIServiceTests.swift in Sources */,
+				AACF8BD231D22F96D7F23425 /* EditCommuteTests.swift in Sources */,
+				690E7B3E6EEF3C368E82FB35 /* StopSearchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
