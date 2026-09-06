@@ -8,6 +8,7 @@ struct CommuteTests {
 
         #expect(commute.leg(for: .outbound).boardingStop == "Skanstull")
         #expect(commute.leg(for: .returnTrip).boardingStop == "T-Centralen")
+        #expect(commute.leg(for: .outbound).stopId == "9021014001234000")
     }
 
     @Test func delayedDepartureUsesPredictedTime() {
@@ -19,10 +20,21 @@ struct CommuteTests {
             destination: "Farsta strand",
             scheduledAt: scheduled,
             predictedAt: predicted,
-            platform: "3"
+            platform: "3",
+            status: .delayed,
+            delayMinutes: 2
         )
 
         #expect(departure.effectiveTime == predicted)
         #expect(departure.isDelayed)
+        #expect(departure.status == .delayed)
+    }
+
+    @Test func statusDisplayNames() {
+        #expect(DepartureStatus.scheduled.displayName == "Scheduled")
+        #expect(DepartureStatus.onTime.displayName == "On time")
+        #expect(DepartureStatus.delayed.displayName == "Delayed")
+        #expect(DepartureStatus.early.displayName == "Early")
+        #expect(DepartureStatus.cancelled.displayName == "Cancelled")
     }
 }

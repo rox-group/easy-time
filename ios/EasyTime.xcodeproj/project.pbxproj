@@ -7,11 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F263C330DBCB5DF07755BF7 /* CommuteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE23887E6B89C42ACEB0374 /* CommuteViewModel.swift */; };
 		116C71B59E26FC070408CB77 /* Commute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E11B805B81DEED202312E2E /* Commute.swift */; };
 		58C12A9A25608136F980A3BF /* CommuteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */; };
+		7DD67357CDD811191F554A6D /* DeparturesAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E38A83C7B4E3409246645C4 /* DeparturesAPIServiceTests.swift */; };
+		98253D73AB2BDE0FA9EA40CD /* DeparturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1AAA79D200D77AFDD44A70B /* DeparturesService.swift */; };
 		9F4520EE6B2914B02E4F67BD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE53685208483B8387A8DC6 /* ContentView.swift */; };
 		B5382861C8BC5E835C235FC5 /* EasyTimeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */; };
+		DB2FC7630AC851A14D7739D3 /* CommuteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4A7CE0CCD4008F6A2FB9E0 /* CommuteViewModelTests.swift */; };
 		E6A30E9DBE1D8F832F824990 /* CommuteFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */; };
+		EB7FF5E32178E677AECB4B3A /* DepartureAPIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E341A1EDE260A08DC6CA653 /* DepartureAPIModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,10 +31,15 @@
 
 /* Begin PBXFileReference section */
 		16718FBA8FEB0F9BCD99E525 /* EasyTimeTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = EasyTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E341A1EDE260A08DC6CA653 /* DepartureAPIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepartureAPIModels.swift; sourceTree = "<group>"; };
+		5BE23887E6B89C42ACEB0374 /* CommuteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteViewModel.swift; sourceTree = "<group>"; };
 		5E11B805B81DEED202312E2E /* Commute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commute.swift; sourceTree = "<group>"; };
 		655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteTests.swift; sourceTree = "<group>"; };
 		7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyTimeApp.swift; sourceTree = "<group>"; };
+		7E38A83C7B4E3409246645C4 /* DeparturesAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeparturesAPIServiceTests.swift; sourceTree = "<group>"; };
+		8F4A7CE0CCD4008F6A2FB9E0 /* CommuteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteViewModelTests.swift; sourceTree = "<group>"; };
 		9E81CE223D44D336A9991FB2 /* EasyTime.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = EasyTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1AAA79D200D77AFDD44A70B /* DeparturesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeparturesService.swift; sourceTree = "<group>"; };
 		A839B586B5E97492FAB7B4AE /* CommuteFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteFixtures.swift; sourceTree = "<group>"; };
 		ADE53685208483B8387A8DC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,8 +58,17 @@
 			isa = PBXGroup;
 			children = (
 				5E11B805B81DEED202312E2E /* Commute.swift */,
+				3E341A1EDE260A08DC6CA653 /* DepartureAPIModels.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		56448FF4EB995C96C7C20987 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				5BE23887E6B89C42ACEB0374 /* CommuteViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		82F0D81B8681D12E053AF29E /* EasyTime */ = {
@@ -58,6 +77,8 @@
 				7E16C1769B29041FDE1C6E92 /* EasyTimeApp.swift */,
 				9BB5386CE07F5EAB7BD1E58A /* Fixtures */,
 				468FF2711940662E4CD5C0F9 /* Models */,
+				C6ADEF2A67AB30385197A406 /* Services */,
+				56448FF4EB995C96C7C20987 /* ViewModels */,
 				A3C20F485088BA7CCD195288 /* Views */,
 			);
 			path = EasyTime;
@@ -88,10 +109,20 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		C6ADEF2A67AB30385197A406 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1AAA79D200D77AFDD44A70B /* DeparturesService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		D89A8545200102CF3035E8F5 /* EasyTimeTests */ = {
 			isa = PBXGroup;
 			children = (
 				655D70A5CCC7DCD6D9D75A2B /* CommuteTests.swift */,
+				8F4A7CE0CCD4008F6A2FB9E0 /* CommuteViewModelTests.swift */,
+				7E38A83C7B4E3409246645C4 /* DeparturesAPIServiceTests.swift */,
 			);
 			path = EasyTimeTests;
 			sourceTree = "<group>";
@@ -178,7 +209,10 @@
 			files = (
 				116C71B59E26FC070408CB77 /* Commute.swift in Sources */,
 				E6A30E9DBE1D8F832F824990 /* CommuteFixtures.swift in Sources */,
+				0F263C330DBCB5DF07755BF7 /* CommuteViewModel.swift in Sources */,
 				9F4520EE6B2914B02E4F67BD /* ContentView.swift in Sources */,
+				EB7FF5E32178E677AECB4B3A /* DepartureAPIModels.swift in Sources */,
+				98253D73AB2BDE0FA9EA40CD /* DeparturesService.swift in Sources */,
 				B5382861C8BC5E835C235FC5 /* EasyTimeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -188,6 +222,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				58C12A9A25608136F980A3BF /* CommuteTests.swift in Sources */,
+				DB2FC7630AC851A14D7739D3 /* CommuteViewModelTests.swift in Sources */,
+				7DD67357CDD811191F554A6D /* DeparturesAPIServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
