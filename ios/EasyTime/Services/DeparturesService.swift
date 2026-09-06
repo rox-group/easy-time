@@ -33,6 +33,8 @@ public protocol DeparturesServiceProtocol: Sendable {
         limit: Int?,
         timeWindowMinutes: Int?
     ) async throws -> APIDeparturesResponse
+
+    func searchStops(query: String) async throws -> [TransitStop]
 }
 
 public extension DeparturesServiceProtocol {
@@ -54,6 +56,10 @@ public extension DeparturesServiceProtocol {
             limit: limit,
             timeWindowMinutes: timeWindowMinutes
         )
+    }
+
+    func searchStops(query: String = "") async throws -> [TransitStop] {
+        try await searchStops(query: query)
     }
 }
 
@@ -83,7 +89,10 @@ public final class DeparturesAPIService: DeparturesServiceProtocol {
             throw DeparturesServiceError.emptyStopId
         }
 
-        var urlComponents = URLComponents(url: baseURL.appendingPathComponent("departures"), resolvingAgainstBaseURL: true)
+        var urlComponents = URLComponents(
+            url: baseURL.appendingPathComponent("departures"),
+            resolvingAgainstBaseURL: true
+        )
         var queryItems: [URLQueryItem] = [
             URLQueryItem(name: "stop_id", value: trimmedStopId)
         ]
@@ -143,14 +152,12 @@ public final class DeparturesAPIService: DeparturesServiceProtocol {
             let container = try decoder.singleValueContainer()
             let dateStr = try container.decode(String.self)
 
-            // Try ISO8601 with fractional seconds first
             let isoFormatterWithFractional = ISO8601DateFormatter()
             isoFormatterWithFractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let date = isoFormatterWithFractional.date(from: dateStr) {
                 return date
             }
 
-            // Fallback to standard ISO8601
             let standardIsoFormatter = ISO8601DateFormatter()
             standardIsoFormatter.formatOptions = [.withInternetDateTime]
             if let date = standardIsoFormatter.date(from: dateStr) {
@@ -167,6 +174,56 @@ public final class DeparturesAPIService: DeparturesServiceProtocol {
             return try decoder.decode(APIDeparturesResponse.self, from: data)
         } catch {
             throw DeparturesServiceError.decodingError(error.localizedDescription)
+        }
+    }
+
+    public func searchStops(query: String = "") async throws -> [TransitStop] {
+        var urlComponents = URLComponents(
+            url: baseURL.appendingPathComponent("stops"),
+            resolvingAgainstBaseURL: true
+        )
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            urlComponents?.queryItems = [URLQueryItem(name: "query", value: trimmed)]
+        }
+
+        guard let url = urlComponents?.url else {
+            throw DeparturesServiceError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 10.0
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            // Fallback to offline presets on network failure
+            return filterPresets(query: trimmed)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            return filterPresets(query: trimmed)
+        }
+
+        do {
+            let decoded = try JSONDecoder().decode(APIStopsResponse.self, from: data)
+            let results = decoded.stops.map { $0.toTransitStop() }
+            return results.isEmpty ? filterPresets(query: trimmed) : results
+        } catch {
+            return filterPresets(query: trimmed)
+        }
+    }
+
+    private func filterPresets(query: String) -> [TransitStop] {
+        if query.isEmpty {
+            return TransitStop.presetStops
+        }
+        return TransitStop.presetStops.filter {
+            $0.name.localizedCaseInsensitiveContains(query) || $0.id == query
         }
     }
 }
