@@ -12,6 +12,18 @@ public struct APIDeparturesResponse: Decodable, Sendable {
         case stopId = "stop_id"
         case departures
     }
+
+    public init(
+        generatedAt: Date,
+        freshnessAt: Date? = nil,
+        stopId: String,
+        departures: [APIDepartureItem] = []
+    ) {
+        self.generatedAt = generatedAt
+        self.freshnessAt = freshnessAt
+        self.stopId = stopId
+        self.departures = departures
+    }
 }
 
 public struct APIDepartureItem: Decodable, Identifiable, Sendable {
@@ -27,6 +39,32 @@ public struct APIDepartureItem: Decodable, Identifiable, Sendable {
     public let stopName: String
     public let delayMinutes: Int?
     public let isRealtime: Bool
+
+    public init(
+        route: String,
+        destination: String,
+        scheduledAt: Date,
+        predictedAt: Date? = nil,
+        platform: String? = nil,
+        status: DepartureStatus = .scheduled,
+        tripId: String = "",
+        stopId: String = "",
+        stopName: String = "",
+        delayMinutes: Int? = nil,
+        isRealtime: Bool = false
+    ) {
+        self.route = route
+        self.destination = destination
+        self.scheduledAt = scheduledAt
+        self.predictedAt = predictedAt
+        self.platform = platform
+        self.status = status
+        self.tripId = tripId
+        self.stopId = stopId
+        self.stopName = stopName
+        self.delayMinutes = delayMinutes
+        self.isRealtime = isRealtime
+    }
 
     enum CodingKeys: String, CodingKey {
         case route
