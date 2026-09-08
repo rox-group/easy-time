@@ -52,4 +52,4 @@ journeys, rather than providing a general journey-planning experience.
 2. [x] **Step 2:** Define the backend API contract and departure response model.
 3. [x] **Step 3:** Implement GTFS static import and GTFS-Realtime polling in the backend.
 4. [x] **Step 4:** Connect the iOS client to the backend and add tests.
-5. [ ] **Step 5 (Next):** Add WidgetKit and local departure reminders.
+5. [x] **Step 5:** Add WidgetKit and local departure reminders.

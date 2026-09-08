@@ -1,5 +1,8 @@
 import Foundation
 import SwiftUI
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 @MainActor
 public final class CommuteViewModel: ObservableObject {
@@ -11,15 +14,18 @@ public final class CommuteViewModel: ObservableObject {
     @Published public var lastRefreshedAt: Date? = nil
 
     public let departuresService: DeparturesServiceProtocol
+    public let storage: CommuteStorageProtocol
 
     public init(
         commute: SavedCommute,
         initialDirection: CommuteDirection = .outbound,
-        departuresService: DeparturesServiceProtocol = DeparturesAPIService()
+        departuresService: DeparturesServiceProtocol = DeparturesAPIService(),
+        storage: CommuteStorageProtocol = CommuteStorage.shared
     ) {
         self.commute = commute
         self.selectedDirection = initialDirection
         self.departuresService = departuresService
+        self.storage = storage
     }
 
     public var currentLeg: CommuteLeg {
@@ -36,6 +42,8 @@ public final class CommuteViewModel: ObservableObject {
 
     public func updateCommute(_ updatedCommute: SavedCommute) {
         self.commute = updatedCommute
+        storage.saveCommute(updatedCommute)
+        reloadWidgets()
         Task {
             await fetchDeparturesForCurrentLeg()
         }
@@ -56,7 +64,6 @@ public final class CommuteViewModel: ObservableObject {
     public func fetchDeparturesForCurrentLeg() async {
         let leg = commute.leg(for: selectedDirection)
         guard !leg.stopId.isEmpty else {
-            // If stopId is empty (e.g. pure offline fixture mode), do not attempt API call
             return
         }
 
@@ -86,9 +93,19 @@ public final class CommuteViewModel: ObservableObject {
             freshnessAt = response.freshnessAt
             lastRefreshedAt = Date()
             isLoading = false
+
+            storage.saveDepartures(mappedDepartures, for: selectedDirection)
+            storage.saveCommute(commute)
+            reloadWidgets()
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func reloadWidgets() {
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
     }
 }
