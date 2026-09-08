@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CommuteDirection: String, CaseIterable, Identifiable, Sendable {
+public enum CommuteDirection: String, CaseIterable, Identifiable, Sendable, Codable {
     case outbound = "To work"
     case returnTrip = "Home"
 
@@ -39,7 +39,7 @@ public enum DepartureStatus: String, Codable, Sendable, CaseIterable {
     }
 }
 
-public struct SavedCommute: Identifiable, Sendable {
+public struct SavedCommute: Identifiable, Sendable, Codable, Equatable {
     public let id: UUID
     public let name: String
     public let origin: String
@@ -68,7 +68,7 @@ public struct SavedCommute: Identifiable, Sendable {
     }
 }
 
-public struct CommuteLeg: Sendable, Equatable {
+public struct CommuteLeg: Sendable, Equatable, Codable {
     public let stopId: String
     public let boardingStop: String
     public let destination: String
@@ -99,7 +99,7 @@ public struct CommuteLeg: Sendable, Equatable {
     }
 }
 
-public struct Departure: Identifiable, Sendable, Equatable {
+public struct Departure: Identifiable, Sendable, Equatable, Codable {
     public let id: UUID
     public let tripId: String
     public let route: String
@@ -147,5 +147,10 @@ public struct Departure: Identifiable, Sendable, Equatable {
 
     public var isDelayed: Bool {
         status == .delayed || (delayMinutes ?? 0) > 0 || (predictedAt.map { $0 > scheduledAt } ?? false)
+    }
+
+    public func minutesUntilDeparture(from referenceDate: Date = Date()) -> Int {
+        let diff = effectiveTime.timeIntervalSince(referenceDate)
+        return max(0, Int(round(diff / 60.0)))
     }
 }
