@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clean stale and merged branches
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const dryRun = context.payload.inputs ? (context.payload.inputs.dry_run === 'true' || context.payload.inputs.dry_run === true) : false;
