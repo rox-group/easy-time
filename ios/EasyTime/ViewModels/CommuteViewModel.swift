@@ -12,20 +12,25 @@ public final class CommuteViewModel: ObservableObject {
     @Published public var errorMessage: String? = nil
     @Published public var freshnessAt: Date? = nil
     @Published public var lastRefreshedAt: Date? = nil
+    @Published public var scheduledReminderDepartureIds: Set<UUID> = []
 
     public let departuresService: DeparturesServiceProtocol
     public let storage: CommuteStorageProtocol
+    public let reminderService: DepartureReminderServiceProtocol
 
     public init(
         commute: SavedCommute,
         initialDirection: CommuteDirection = .outbound,
         departuresService: DeparturesServiceProtocol = DeparturesAPIService(),
         storage: CommuteStorageProtocol = CommuteStorage.shared
+        storage: CommuteStorageProtocol = CommuteStorage.shared,
+        reminderService: DepartureReminderServiceProtocol = DepartureReminderService.shared
     ) {
         self.commute = commute
         self.selectedDirection = initialDirection
         self.departuresService = departuresService
         self.storage = storage
+        self.reminderService = reminderService
     }
 
     public var currentLeg: CommuteLeg {
@@ -97,9 +102,36 @@ public final class CommuteViewModel: ObservableObject {
             storage.saveDepartures(mappedDepartures, for: selectedDirection)
             storage.saveCommute(commute)
             reloadWidgets()
+            await syncScheduledReminders()
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription
+        }
+    }
+
+    public func syncScheduledReminders() async {
+        scheduledReminderDepartureIds = await reminderService.pendingReminderDepartureIds()
+    }
+
+    public func isReminderScheduled(for departure: Departure) -> Bool {
+        scheduledReminderDepartureIds.contains(departure.id)
+    }
+
+    public func toggleReminder(for departure: Departure) async {
+        if scheduledReminderDepartureIds.contains(departure.id) {
+            await reminderService.cancelReminder(for: departure.id)
+            scheduledReminderDepartureIds.remove(departure.id)
+        } else {
+            do {
+                _ = try await reminderService.scheduleReminder(
+                    for: departure,
+                    walkingBufferMinutes: currentLeg.walkingBufferMinutes
+                )
+                scheduledReminderDepartureIds.insert(departure.id)
+                errorMessage = nil
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 
