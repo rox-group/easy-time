@@ -88,6 +88,15 @@ public struct ContentView: View {
                     } else {
                         ForEach(leg.departures) { departure in
                             DepartureRow(departure: departure)
+                            DepartureRow(
+                                departure: departure,
+                                isReminderScheduled: viewModel.isReminderScheduled(for: departure),
+                                onToggleReminder: {
+                                    Task {
+                                        await viewModel.toggleReminder(for: departure)
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -136,6 +145,7 @@ public struct ContentView: View {
             }
             .task {
                 await viewModel.fetchDeparturesForCurrentLeg()
+                await viewModel.syncScheduledReminders()
             }
         }
     }
@@ -143,9 +153,18 @@ public struct ContentView: View {
 
 public struct DepartureRow: View {
     public let departure: Departure
+    public var isReminderScheduled: Bool
+    public var onToggleReminder: (() -> Void)?
 
     public init(departure: Departure) {
+    public init(
+        departure: Departure,
+        isReminderScheduled: Bool = false,
+        onToggleReminder: (() -> Void)? = nil
+    ) {
         self.departure = departure
+        self.isReminderScheduled = isReminderScheduled
+        self.onToggleReminder = onToggleReminder
     }
 
     public var body: some View {
@@ -170,8 +189,33 @@ public struct DepartureRow: View {
                     .fontWeight(.semibold)
                 statusBadge
             }
+
+            if let onToggleReminder {
+                Button {
+                    onToggleReminder()
+                } label: {
+                    Image(systemName: isReminderScheduled ? "bell.fill" : "bell")
+                        .font(.body)
+                        .foregroundStyle(isReminderScheduled ? .blue : .secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isReminderScheduled ? "Remove departure reminder" : "Set departure reminder")
+            }
         }
         .padding(.vertical, 3)
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            if let onToggleReminder {
+                Button {
+                    onToggleReminder()
+                } label: {
+                    Label(
+                        isReminderScheduled ? "Remove Reminder" : "Remind Me",
+                        systemImage: isReminderScheduled ? "bell.slash" : "bell"
+                    )
+                }
+                .tint(isReminderScheduled ? .gray : .blue)
+            }
+        }
         .accessibilityElement(children: .combine)
     }
 
