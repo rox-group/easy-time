@@ -92,5 +92,55 @@ struct CommuteViewModelTests {
         #expect(viewModel.selectedDirection == .returnTrip)
         #expect(viewModel.currentLeg.boardingStop == "T-Centralen")
     }
+
+    @Test func toggleReminderSchedulesAndCancelsReminder() async {
+        let fixture = SavedCommute.officeFixture
+        let departure = Departure(
+            route: "17",
+            destination: "Åkeshov",
+            scheduledAt: Date().addingTimeInterval(3600),
+            platform: "2"
+        )
+        let mockCenter = MockUserNotificationCenter()
+        let reminderService = DepartureReminderService(notificationCenter: mockCenter)
+        let viewModel = CommuteViewModel(
+            commute: fixture,
+            reminderService: reminderService
+        )
+
+        #expect(viewModel.isReminderScheduled(for: departure) == false)
+
+        // Toggle on
+        await viewModel.toggleReminder(for: departure)
+        #expect(viewModel.isReminderScheduled(for: departure) == true)
+        #expect(viewModel.errorMessage == nil)
+        #expect(mockCenter.addedRequests.count == 1)
+
+        // Toggle off
+        await viewModel.toggleReminder(for: departure)
+        #expect(viewModel.isReminderScheduled(for: departure) == false)
+        #expect(mockCenter.removedIdentifiers.contains("departure-reminder-\(departure.id.uuidString)"))
+    }
+
+    @Test func toggleReminderSetsErrorMessageWhenPast() async {
+        let fixture = SavedCommute.officeFixture
+        let pastDeparture = Departure(
+            route: "17",
+            destination: "Åkeshov",
+            scheduledAt: Date().addingTimeInterval(-300),
+            platform: "2"
+        )
+        let mockCenter = MockUserNotificationCenter()
+        let reminderService = DepartureReminderService(notificationCenter: mockCenter)
+        let viewModel = CommuteViewModel(
+            commute: fixture,
+            reminderService: reminderService
+        )
+
+        await viewModel.toggleReminder(for: pastDeparture)
+
+        #expect(viewModel.isReminderScheduled(for: pastDeparture) == false)
+        #expect(viewModel.errorMessage != nil)
+    }
 }
 
